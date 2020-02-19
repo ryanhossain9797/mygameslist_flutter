@@ -37,9 +37,14 @@ class DetailsBloc extends Bloc<DetailsEvent, DetailsLoadState> {
     if (event is LoadDetailsEvent) {
       yield DetailsLoadingState();
       try {
-        WikiModel article = await ApiHelper.getArticleById(event.id);
-        List<ReviewModel> reviews = await ApiHelper.getAllReviews(article.id);
-        yield DetailsLoadedState(article, reviews);
+        List<ReviewModel> reviews = await ApiHelper.getAllReviews(event.id);
+        if (state is DetailsLoadedState) {
+          yield DetailsLoadedState(
+              (state as DetailsLoadedState).article, reviews);
+        } else {
+          WikiModel article = await ApiHelper.getArticleById(event.id);
+          yield DetailsLoadedState(article, reviews);
+        }
       } catch (e) {
         yield DetailsFailedState();
       }

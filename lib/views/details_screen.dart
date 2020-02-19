@@ -165,8 +165,9 @@ class ReviewWidget extends StatelessWidget {
 
   final ReviewCallback onReviewed;
 
-  String username = "";
-  String review = "";
+  final TextEditingController usernameController = TextEditingController();
+  final TextEditingController reviewController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -182,9 +183,7 @@ class ReviewWidget extends StatelessWidget {
                 Expanded(
                   child: InputBox(
                     hint: "username",
-                    onChange: (text) {
-                      username = text;
-                    },
+                    controller: usernameController,
                   ),
                 ),
                 Expanded(
@@ -200,8 +199,13 @@ class ReviewWidget extends StatelessWidget {
                       ),
                       child: Text("submit"),
                       onPressed: () {
-                        if (username.isNotEmpty && review.isNotEmpty) {
-                          onReviewed(username, review);
+                        if (usernameController.text.isNotEmpty &&
+                            reviewController.text.isNotEmpty) {
+                          onReviewed(
+                              usernameController.text, reviewController.text);
+                          FocusScope.of(context).requestFocus(FocusNode());
+                          usernameController.clear();
+                          reviewController.clear();
                         }
                       },
                     ),
@@ -216,9 +220,7 @@ class ReviewWidget extends StatelessWidget {
             ),
             child: InputBox(
               hint: "review",
-              onChange: (text) {
-                review = text;
-              },
+              controller: reviewController,
             ),
           ),
         ],
@@ -227,14 +229,12 @@ class ReviewWidget extends StatelessWidget {
   }
 }
 
-typedef InputCallback(String text);
-
 class InputBox extends StatelessWidget {
-  const InputBox({Key key, this.hint = "hint", @required this.onChange})
+  const InputBox({Key key, this.hint = "hint", this.controller})
       : super(key: key);
 
   final String hint;
-  final InputCallback onChange;
+  final TextEditingController controller;
   @override
   Widget build(BuildContext context) {
     return Theme(
@@ -242,9 +242,7 @@ class InputBox extends StatelessWidget {
         cursorColor: Colors.lightGreenAccent,
       ),
       child: TextField(
-        onChanged: (text) {
-          onChange(text);
-        },
+        controller: controller != null ? controller : TextEditingController(),
         decoration: InputDecoration(
           contentPadding: EdgeInsets.symmetric(
             vertical: 0,
