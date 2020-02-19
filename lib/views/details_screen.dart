@@ -19,7 +19,10 @@ class _DetailsScreenState extends State<DetailsScreen> {
     BlocProvider.of<DetailsBloc>(context).add(LoadDetailsEvent(widget.id));
     return Scaffold(
       appBar: AppBar(
-        title: Text("Details"),
+        title: Text(
+          "Details",
+          style: TextStyle(fontFamily: 'Poppins', fontWeight: FontWeight.bold),
+        ),
         centerTitle: true,
       ),
       body: Container(
@@ -44,7 +47,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                       (state as DetailsLoadedState).reviews;
                   return Expanded(
                     child: Padding(
-                      padding: const EdgeInsets.all(10.0),
+                      padding: const EdgeInsets.symmetric(horizontal: 10.0),
                       child: SingleChildScrollView(
                         physics: BouncingScrollPhysics(),
                         child: Column(

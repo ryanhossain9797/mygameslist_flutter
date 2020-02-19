@@ -18,39 +18,93 @@ class _MyHomePageState extends State<MyHomePage> {
       BlocProvider.of<ListBloc>(context).add(ListLoadEvent());
     }
     return Scaffold(
-      appBar: AppBar(
-        title: Text("MyGamesList"),
-        centerTitle: true,
-      ),
+//      appBar: AppBar(
+//        title: Text("MyGamesList"),
+//        centerTitle: true,
+//      ),
       body: Container(
-        child: Center(child: BlocBuilder<ListBloc, ListLoadState>(
+        child: BlocBuilder<ListBloc, ListLoadState>(
           builder: (context, state) {
             if (state is ListLoadingState) {
-              return CircularProgressIndicator();
+              return Center(child: CircularProgressIndicator());
             } else if (state is ListFailedState) {
-              return Text("error");
+              return Center(child: Text("error"));
             } else {
               List<WikiModel> articles = (state as ListLoadedState).articles;
-              return ListView.builder(
+              return CustomScrollView(
                 physics: BouncingScrollPhysics(),
-                itemCount: articles.length,
-                itemBuilder: (context, pos) {
-                  return ArticleWidget(
-                    article: articles[pos],
-                    onTap: (image) {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
+                slivers: <Widget>[
+                  SliverAppBar(
+                    leading: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: CircleAvatar(
+                        child: Icon(Icons.person),
+                      ),
+                    ),
+                    pinned: true,
+                    expandedHeight: 180,
+                    flexibleSpace: FlexibleSpaceBar(
+                      centerTitle: true,
+                      title: Text(
+                        "MyGamesList",
+                        style: TextStyle(
+                            fontFamily: 'Poppins', fontWeight: FontWeight.bold),
+                      ),
+                      background: Image.asset(
+                        'images/header.jpeg',
+                        colorBlendMode: BlendMode.colorBurn,
+                        color: Color(0x66000000),
+                      ),
+                    ),
+                  ),
+                  SliverList(
+                    delegate: SliverChildBuilderDelegate((context, index) {
+                      return ArticleWidget(
+                        article: articles[index],
+                        onTap: (image) {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
                               builder: (context) => DetailsScreen(
-                                  tempImage: image, id: articles[pos].id)));
-                    },
-                  );
-                },
+                                tempImage: image,
+                                id: articles[index].id,
+                              ),
+                            ),
+                          );
+                        },
+                      );
+                    }, childCount: articles.length),
+                  )
+                ],
               );
             }
           },
-        )),
+        ),
       ),
     );
   }
 }
+
+/*
+ListView.builder(
+shrinkWrap: true,
+physics: BouncingScrollPhysics(),
+itemCount: articles.length,
+itemBuilder: (context, pos) {
+return ArticleWidget(
+article: articles[pos],
+onTap: (image) {
+Navigator.push(
+context,
+MaterialPageRoute(
+builder: (context) => DetailsScreen(
+tempImage: image,
+id: articles[pos].id,
+),
+),
+);
+},
+);
+},
+)
+*/
