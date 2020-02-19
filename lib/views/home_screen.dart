@@ -51,9 +51,9 @@ class _MyHomePageState extends State<MyHomePage> {
                             fontFamily: 'Poppins', fontWeight: FontWeight.bold),
                       ),
                       background: Image.asset(
-                        'images/header.jpeg',
-                        fit: BoxFit.fill,
-                        colorBlendMode: BlendMode.colorBurn,
+                        'images/header.jpg',
+                        fit: BoxFit.cover,
+                        colorBlendMode: BlendMode.darken,
                         color: Color(0x66000000),
                       ),
                     ),
