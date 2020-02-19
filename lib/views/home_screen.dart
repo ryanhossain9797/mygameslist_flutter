@@ -5,6 +5,7 @@ import 'package:mygameslist_flutter/blocs/list_bloc.dart';
 import 'package:mygameslist_flutter/components/article_widget.dart';
 import 'package:mygameslist_flutter/models/wiki_model.dart';
 import 'package:mygameslist_flutter/views/details_screen.dart';
+import 'package:page_transition/page_transition.dart';
 
 class MyHomePage extends StatefulWidget {
   @override
@@ -65,8 +66,9 @@ class _MyHomePageState extends State<MyHomePage> {
                         onTap: (image) {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(
-                              builder: (context) => DetailsScreen(
+                            PageTransition(
+                              type: PageTransitionType.fade,
+                              child: DetailsScreen(
                                 tempImage: image,
                                 id: articles[index].id,
                               ),
