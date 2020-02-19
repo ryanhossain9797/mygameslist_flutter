@@ -18,10 +18,7 @@ class _MyHomePageState extends State<MyHomePage> {
       BlocProvider.of<ListBloc>(context).add(ListLoadEvent());
     }
     return Scaffold(
-//      appBar: AppBar(
-//        title: Text("MyGamesList"),
-//        centerTitle: true,
-//      ),
+      drawer: Drawer(),
       body: Container(
         child: BlocBuilder<ListBloc, ListLoadState>(
           builder: (context, state) {
@@ -35,14 +32,16 @@ class _MyHomePageState extends State<MyHomePage> {
                 physics: BouncingScrollPhysics(),
                 slivers: <Widget>[
                   SliverAppBar(
-                    leading: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: CircleAvatar(
-                        child: Icon(Icons.person),
+                    automaticallyImplyLeading: true,
+                    actions: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: CircleAvatar(
+                          child: Icon(Icons.person),
+                        ),
                       ),
-                    ),
+                    ],
                     pinned: true,
-                    expandedHeight: 180,
                     flexibleSpace: FlexibleSpaceBar(
                       centerTitle: true,
                       title: Text(
@@ -52,10 +51,12 @@ class _MyHomePageState extends State<MyHomePage> {
                       ),
                       background: Image.asset(
                         'images/header.jpeg',
+                        fit: BoxFit.fill,
                         colorBlendMode: BlendMode.colorBurn,
                         color: Color(0x66000000),
                       ),
                     ),
+                    expandedHeight: 180,
                   ),
                   SliverList(
                     delegate: SliverChildBuilderDelegate((context, index) {
@@ -84,27 +85,3 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 }
-
-/*
-ListView.builder(
-shrinkWrap: true,
-physics: BouncingScrollPhysics(),
-itemCount: articles.length,
-itemBuilder: (context, pos) {
-return ArticleWidget(
-article: articles[pos],
-onTap: (image) {
-Navigator.push(
-context,
-MaterialPageRoute(
-builder: (context) => DetailsScreen(
-tempImage: image,
-id: articles[pos].id,
-),
-),
-);
-},
-);
-},
-)
-*/

@@ -18,6 +18,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
   Widget build(BuildContext context) {
     BlocProvider.of<DetailsBloc>(context).add(LoadDetailsEvent(widget.id));
     return Scaffold(
+      drawer: Drawer(),
       appBar: AppBar(
         title: Text(
           "Details",
