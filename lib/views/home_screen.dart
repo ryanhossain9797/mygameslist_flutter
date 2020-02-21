@@ -28,14 +28,20 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
             } else if (state is ListFailedState) {
               return Center(child: Text("error"));
             } else {
-              TabController tabController =
+              TabController _tabController =
                   TabController(length: 2, vsync: this);
-              List<WikiModel> articles = (state as ListLoadedState).articles;
+              List<WikiModel> _articles = (state as ListLoadedState).articles;
               return NestedScrollView(
                 headerSliverBuilder:
                     (BuildContext context, bool innerBoxIsScrolled) {
                   return [
                     SliverAppBar(
+                      centerTitle: true,
+                      title: Text(
+                        "MyGamesList",
+                        style: TextStyle(
+                            fontFamily: 'Poppins', fontWeight: FontWeight.bold),
+                      ),
                       automaticallyImplyLeading: true,
                       actions: <Widget>[
                         Padding(
@@ -47,13 +53,6 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                       ],
                       pinned: true,
                       flexibleSpace: FlexibleSpaceBar(
-                        centerTitle: true,
-                        title: Text(
-                          "MyGamesList",
-                          style: TextStyle(
-                              fontFamily: 'Poppins',
-                              fontWeight: FontWeight.bold),
-                        ),
                         background: Image.asset(
                           'images/header.jpg',
                           fit: BoxFit.cover,
@@ -62,20 +61,28 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                         ),
                       ),
                       expandedHeight: 180,
+                      bottom: TabBar(
+                        indicatorColor: Colors.lightGreenAccent,
+                        controller: _tabController,
+                        tabs: <Widget>[
+                          Tab(child: Icon(Icons.list)),
+                          Tab(child: Icon(Icons.favorite)),
+                        ],
+                      ),
                     ),
                   ];
                 },
                 body: TabBarView(
-                  controller: tabController,
+                  controller: _tabController,
                   children: [
                     MediaQuery.removePadding(
                       context: context,
                       removeTop: true,
                       child: ListView.builder(
-                        itemCount: articles.length,
+                        itemCount: _articles.length,
                         itemBuilder: (BuildContext context, int index) {
                           return ArticleWidget(
-                            article: articles[index],
+                            article: _articles[index],
                             onTap: (image) {
                               Navigator.push(
                                 context,
@@ -83,7 +90,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                                   type: PageTransitionType.fade,
                                   child: DetailsScreen(
                                     tempImage: image,
-                                    id: articles[index].id,
+                                    id: _articles[index].id,
                                   ),
                                 ),
                               );
@@ -107,33 +114,3 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     );
   }
 }
-
-/*
-SliverAppBar(
-automaticallyImplyLeading: true,
-actions: <Widget>[
-Padding(
-padding: const EdgeInsets.all(8.0),
-child: CircleAvatar(
-child: Icon(Icons.person),
-),
-),
-],
-pinned: true,
-flexibleSpace: FlexibleSpaceBar(
-centerTitle: true,
-title: Text(
-"MyGamesList",
-style: TextStyle(
-fontFamily: 'Poppins', fontWeight: FontWeight.bold),
-),
-background: Image.asset(
-'images/header.jpg',
-fit: BoxFit.cover,
-colorBlendMode: BlendMode.darken,
-color: Color(0x66000000),
-),
-),
-expandedHeight: 180,
-),
-*/
