@@ -5,6 +5,7 @@ import 'package:mygameslist_flutter/blocs/list_bloc.dart';
 import 'package:mygameslist_flutter/components/article_widget.dart';
 import 'package:mygameslist_flutter/models/wiki_model.dart';
 import 'package:mygameslist_flutter/views/details_screen.dart';
+import 'package:mygameslist_flutter/views/login_screen.dart';
 import 'package:page_transition/page_transition.dart';
 
 class MyHomePage extends StatefulWidget {
@@ -46,8 +47,17 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                       actions: <Widget>[
                         Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: CircleAvatar(
-                            child: Icon(Icons.person),
+                          child: GestureDetector(
+                            onTap: () => Navigator.push(
+                              context,
+                              PageTransition(
+                                type: PageTransitionType.fade,
+                                child: LoginScreen(),
+                              ),
+                            ),
+                            child: CircleAvatar(
+                              child: Icon(Icons.person),
+                            ),
                           ),
                         ),
                       ],
