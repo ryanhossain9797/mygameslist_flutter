@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mygameslist_flutter/blocs/auth_bloc.dart';
 import 'package:mygameslist_flutter/blocs/list_bloc.dart';
 import 'package:mygameslist_flutter/views/home_screen.dart';
 
@@ -18,6 +19,7 @@ class MyApp extends StatelessWidget {
       providers: [
         BlocProvider<ListBloc>(create: (context) => ListBloc()),
         BlocProvider<DetailsBloc>(create: (context) => DetailsBloc()),
+        BlocProvider<AuthBloc>(create: (context) => AuthBloc()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

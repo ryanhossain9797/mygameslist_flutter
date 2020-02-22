@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:getflutter/components/button/gf_button.dart';
 import 'package:mygameslist_flutter/blocs/details_bloc.dart';
+import 'package:mygameslist_flutter/components/user_avatar.dart';
 import 'package:mygameslist_flutter/styles.dart';
 import 'package:mygameslist_flutter/models/review_model.dart';
 import 'package:mygameslist_flutter/models/wiki_model.dart';
+import 'package:mygameslist_flutter/views/home_screen.dart';
 
 class DetailsScreen extends StatefulWidget {
   final NetworkImage tempImage;
@@ -28,6 +30,12 @@ class _DetailsScreenState extends State<DetailsScreen> {
             SliverAppBar(
               pinned: true,
               expandedHeight: 180,
+              title: Text(
+                "Details",
+                style: TextStyle(
+                    fontFamily: 'Poppins', fontWeight: FontWeight.bold),
+              ),
+              centerTitle: true,
               flexibleSpace: FlexibleSpaceBar(
                 background: Hero(
                   tag: widget.id,
@@ -54,6 +62,9 @@ class _DetailsScreenState extends State<DetailsScreen> {
                   ),
                 ),
               ),
+              actions: <Widget>[
+                UserAvatar(),
+              ],
             ),
           ];
         },

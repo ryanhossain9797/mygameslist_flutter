@@ -1,12 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mygameslist_flutter/blocs/auth_bloc.dart';
 import 'package:mygameslist_flutter/blocs/list_bloc.dart';
 import 'package:mygameslist_flutter/components/article_widget.dart';
+import 'package:mygameslist_flutter/components/user_avatar.dart';
 import 'package:mygameslist_flutter/models/wiki_model.dart';
 import 'package:mygameslist_flutter/views/details_screen.dart';
 import 'package:mygameslist_flutter/views/login_screen.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:animations/animations.dart';
 
 class MyHomePage extends StatefulWidget {
   @override
@@ -27,7 +30,23 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
             if (state is ListLoadingState) {
               return Center(child: CircularProgressIndicator());
             } else if (state is ListFailedState) {
-              return Center(child: Text("error"));
+              //------------------------------------------------Load Error
+              return Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Text("error"),
+                    Padding(
+                      padding: EdgeInsets.all(10),
+                      child: IconButton(
+                        icon: Icon(Icons.refresh),
+                        onPressed: () => BlocProvider.of<ListBloc>(context)
+                            .add(ListLoadEvent()),
+                      ),
+                    )
+                  ],
+                ),
+              );
             } else {
               TabController _tabController =
                   TabController(length: 2, vsync: this);
@@ -36,6 +55,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                 headerSliverBuilder:
                     (BuildContext context, bool innerBoxIsScrolled) {
                   return [
+                    //-------------------------------------------------AppBar
                     SliverAppBar(
                       centerTitle: true,
                       title: Text(
@@ -45,23 +65,12 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                       ),
                       automaticallyImplyLeading: true,
                       actions: <Widget>[
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: GestureDetector(
-                            onTap: () => Navigator.push(
-                              context,
-                              PageTransition(
-                                type: PageTransitionType.fade,
-                                child: LoginScreen(),
-                              ),
-                            ),
-                            child: CircleAvatar(
-                              child: Icon(Icons.person),
-                            ),
-                          ),
-                        ),
+                        //-------------------------------------------User Avatar
+                        UserAvatar(),
                       ],
                       pinned: true,
+
+                      //----------------------------------------------AppBar Background Image
                       flexibleSpace: FlexibleSpaceBar(
                         background: Image.asset(
                           'images/header.jpg',
@@ -71,6 +80,8 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                         ),
                       ),
                       expandedHeight: 180,
+
+                      //----------------------------------------------Tab Buttons
                       bottom: TabBar(
                         indicatorColor: Colors.lightGreenAccent,
                         controller: _tabController,
@@ -82,15 +93,19 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                     ),
                   ];
                 },
+
+                //-----------------------------------------------------Tab Body
                 body: TabBarView(
                   controller: _tabController,
                   children: [
+                    //--------------------------------------------------Tab 1
                     MediaQuery.removePadding(
                       context: context,
                       removeTop: true,
                       child: ListView.builder(
                         itemCount: _articles.length,
                         itemBuilder: (BuildContext context, int index) {
+                          //-------------------------------------------All Game Articles
                           return ArticleWidget(
                             article: _articles[index],
                             onTap: (image) {
@@ -109,6 +124,8 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                         },
                       ),
                     ),
+
+                    //----------------------------------------------Tab 2
                     Container(
                       child: Center(
                         child: Text("TAB 2"),
