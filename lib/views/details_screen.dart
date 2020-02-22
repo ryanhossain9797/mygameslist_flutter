@@ -31,9 +31,26 @@ class _DetailsScreenState extends State<DetailsScreen> {
               flexibleSpace: FlexibleSpaceBar(
                 background: Hero(
                   tag: widget.id,
-                  child: Image(
-                    fit: BoxFit.cover,
-                    image: widget.tempImage,
+                  child: Stack(
+                    fit: StackFit.expand,
+                    children: [
+                      Image(
+                        fit: BoxFit.cover,
+                        image: widget.tempImage,
+                      ),
+                      Container(
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: FractionalOffset.topCenter,
+                            end: FractionalOffset.bottomCenter,
+                            colors: [
+                              Colors.greenAccent.withAlpha(127),
+                              Colors.transparent
+                            ],
+                          ),
+                        ),
+                      )
+                    ],
                   ),
                 ),
               ),
