@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:getflutter/components/button/gf_button.dart';
+import 'package:mygameslist_flutter/blocs/auth_bloc.dart';
 import 'package:mygameslist_flutter/blocs/details_bloc.dart';
 import 'package:mygameslist_flutter/components/user_avatar.dart';
 import 'package:mygameslist_flutter/styles.dart';
 import 'package:mygameslist_flutter/models/review_model.dart';
 import 'package:mygameslist_flutter/models/wiki_model.dart';
 import 'package:mygameslist_flutter/views/home_screen.dart';
+import 'package:mygameslist_flutter/views/login_screen.dart';
+import 'package:page_transition/page_transition.dart';
 
 class DetailsScreen extends StatefulWidget {
   final NetworkImage tempImage;
@@ -30,12 +33,6 @@ class _DetailsScreenState extends State<DetailsScreen> {
             SliverAppBar(
               pinned: true,
               expandedHeight: 180,
-              title: Text(
-                "Details",
-                style: TextStyle(
-                    fontFamily: 'Poppins', fontWeight: FontWeight.bold),
-              ),
-              centerTitle: true,
               flexibleSpace: FlexibleSpaceBar(
                 background: Hero(
                   tag: widget.id,
@@ -52,7 +49,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                             begin: FractionalOffset.topCenter,
                             end: FractionalOffset.bottomCenter,
                             colors: [
-                              Colors.greenAccent.withAlpha(127),
+                              Colors.lightGreenAccent.withAlpha(127),
                               Colors.transparent
                             ],
                           ),
@@ -119,20 +116,38 @@ class _DetailsScreenState extends State<DetailsScreen> {
                     ),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 10),
-                      child: ReviewSubmissionWidget(
-                        onReviewed: (username, review) {
-                          BlocProvider.of<DetailsBloc>(context).add(
-                            ReviewDetailsEvent(
-                              review: ReviewModel(
-                                id: article.id,
-                                username: username,
-                                review: review,
+                      child: BlocBuilder<AuthBloc, AuthState>(
+                        builder: (context, state) {
+                          if (state is SignedInAuthState) {
+                            return ReviewSubmissionWidget(
+                              onReviewed: (username, review) {
+                                BlocProvider.of<DetailsBloc>(context).add(
+                                  ReviewDetailsEvent(
+                                    review: ReviewModel(
+                                      id: article.id,
+                                      username: username,
+                                      review: review,
+                                    ),
+                                  ),
+                                );
+                              },
+                            );
+                          } else {
+                            return GFButton(
+                              color: Colors.lightGreenAccent,
+                              child: Text("Sign in to review"),
+                              onPressed: () => Navigator.push(
+                                context,
+                                PageTransition(
+                                  child: LoginScreen(),
+                                  type: PageTransitionType.fade,
+                                ),
                               ),
-                            ),
-                          );
+                            );
+                          }
                         },
                       ),
-                    )
+                    ),
                   ],
                 ),
               );
@@ -188,8 +203,6 @@ class ReviewSubmissionWidget extends StatelessWidget {
       : super(key: key);
 
   final ReviewCallback onReviewed;
-
-  final TextEditingController usernameController = TextEditingController();
   final TextEditingController reviewController = TextEditingController();
 
   @override
@@ -205,11 +218,13 @@ class ReviewSubmissionWidget extends StatelessWidget {
             child: Row(
               children: <Widget>[
                 Expanded(
-                  child: InputBox(
-                    hint: "username",
-                    controller: usernameController,
+                    child: Center(
+                  child: Text(
+                    (BlocProvider.of<AuthBloc>(context).state
+                            as SignedInAuthState)
+                        .username,
                   ),
-                ),
+                )),
                 Expanded(
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
@@ -223,12 +238,16 @@ class ReviewSubmissionWidget extends StatelessWidget {
                       ),
                       child: Text("submit"),
                       onPressed: () {
-                        if (usernameController.text.isNotEmpty &&
-                            reviewController.text.isNotEmpty) {
+                        if ((BlocProvider.of<AuthBloc>(context).state
+                                as SignedInAuthState)
+                            .username
+                            .isNotEmpty) {
                           onReviewed(
-                              usernameController.text, reviewController.text);
+                              (BlocProvider.of<AuthBloc>(context).state
+                                      as SignedInAuthState)
+                                  .username,
+                              reviewController.text);
                           FocusScope.of(context).requestFocus(FocusNode());
-                          usernameController.clear();
                           reviewController.clear();
                         }
                       },
