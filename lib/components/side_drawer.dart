@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mygameslist_flutter/styles.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SideDrawer extends StatefulWidget {
@@ -29,7 +30,7 @@ class _SideDrawerState extends State<SideDrawer> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                Text("Settings"),
+                Text("Settings", style: TextStyle(color: Colors.grey[800])),
               ],
             ),
             decoration: BoxDecoration(color: Colors.lightGreenAccent),
