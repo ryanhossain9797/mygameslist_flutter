@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mygameslist_flutter/blocs/list_bloc.dart';
 import 'package:mygameslist_flutter/components/article_widget.dart';
+import 'package:mygameslist_flutter/components/side_drawer.dart';
 import 'package:mygameslist_flutter/components/user_avatar.dart';
 import 'package:mygameslist_flutter/models/wiki_model.dart';
 import 'package:mygameslist_flutter/views/details_screen.dart';
@@ -21,7 +22,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
       BlocProvider.of<ListBloc>(context).add(ListLoadEvent());
     }
     return Scaffold(
-      drawer: Drawer(),
+      drawer: SideDrawer(),
       body: Container(
         child: BlocBuilder<ListBloc, ListLoadState>(
           builder: (context, state) {

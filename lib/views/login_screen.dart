@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mygameslist_flutter/blocs/auth_bloc.dart';
+import 'package:mygameslist_flutter/components/side_drawer.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -12,6 +13,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     TextEditingController _controller = TextEditingController();
     return Scaffold(
+      drawer: SideDrawer(),
       appBar: AppBar(
         title: Text(
           "Login",

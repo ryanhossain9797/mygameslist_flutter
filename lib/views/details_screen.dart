@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:getflutter/components/button/gf_button.dart';
 import 'package:mygameslist_flutter/blocs/auth_bloc.dart';
 import 'package:mygameslist_flutter/blocs/details_bloc.dart';
+import 'package:mygameslist_flutter/components/review_widget.dart';
+import 'package:mygameslist_flutter/components/side_drawer.dart';
 import 'package:mygameslist_flutter/components/user_avatar.dart';
 import 'package:mygameslist_flutter/styles.dart';
 import 'package:mygameslist_flutter/models/review_model.dart';
@@ -26,7 +28,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
       LoadDetailsEvent(widget.id),
     );
     return Scaffold(
-      drawer: Drawer(),
+      drawer: SideDrawer(),
       body: NestedScrollView(
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
           return [
@@ -119,19 +121,31 @@ class _DetailsScreenState extends State<DetailsScreen> {
                       child: BlocBuilder<AuthBloc, AuthState>(
                         builder: (context, state) {
                           if (state is SignedInAuthState) {
-                            return ReviewSubmissionWidget(
-                              onReviewed: (username, review) {
-                                BlocProvider.of<DetailsBloc>(context).add(
-                                  ReviewDetailsEvent(
-                                    review: ReviewModel(
-                                      id: article.id,
-                                      username: username,
-                                      review: review,
+                            String name = state.username;
+                            bool reviewed = false;
+                            for (ReviewModel review in reviews) {
+                              if (review.username == name) {
+                                reviewed = true;
+                                break;
+                              }
+                            }
+                            if (!reviewed) {
+                              return ReviewSubmissionWidget(
+                                onReviewed: (username, review) {
+                                  BlocProvider.of<DetailsBloc>(context).add(
+                                    ReviewDetailsEvent(
+                                      review: ReviewModel(
+                                        id: article.id,
+                                        username: username,
+                                        review: review,
+                                      ),
                                     ),
-                                  ),
-                                );
-                              },
-                            );
+                                  );
+                                },
+                              );
+                            } else {
+                              return Container();
+                            }
                           } else {
                             return GFButton(
                               color: Colors.lightGreenAccent,
@@ -154,43 +168,6 @@ class _DetailsScreenState extends State<DetailsScreen> {
             }
           },
         ),
-      ),
-    );
-  }
-}
-
-class ReviewWidget extends StatelessWidget {
-  const ReviewWidget({
-    Key key,
-    @required this.review,
-  }) : super(key: key);
-
-  final ReviewModel review;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-      padding: EdgeInsets.all(10),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
-        color: Colors.grey[800],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Text(
-            review.username,
-            style: TextStyle(
-              color: Colors.lightGreenAccent,
-              fontSize: 20,
-            ),
-          ),
-          SizedBox(
-            height: 10,
-          ),
-          Text(review.review),
-        ],
       ),
     );
   }
