@@ -7,8 +7,7 @@ import 'package:mygameslist_flutter/models/wiki_model.dart';
 
 class ApiHelper {
   static getAllReviews(String id) async {
-    var queryParams = {'article': id};
-    var uri = Uri.http("118.179.70.140:3693", "comments", queryParams);
+    var uri = Uri.http("118.179.70.140:3693", "articles/$id/comments");
     Response response = await get(uri);
     var jsonResponse = (jsonDecode(response.body))["comments"];
     List<ReviewModel> reviews = [];
