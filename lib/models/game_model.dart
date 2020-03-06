@@ -1,17 +1,17 @@
 import 'package:flutter/widgets.dart';
 
-class WikiModel {
+class GameModel {
   String id;
   String title;
   String content;
   String imgurl;
-  WikiModel(
+  GameModel(
       {@required this.id,
       @required this.title,
       @required this.content,
       @required this.imgurl});
 
-  WikiModel.fromJson({@required Map<String, dynamic> json}) {
+  GameModel.fromJson({@required Map<String, dynamic> json}) {
     id = json["_id"];
     title = json["title"];
     content = json["content"];

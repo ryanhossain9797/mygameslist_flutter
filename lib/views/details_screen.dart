@@ -8,7 +8,7 @@ import 'package:mygameslist_flutter/components/side_drawer.dart';
 import 'package:mygameslist_flutter/components/user_avatar.dart';
 import 'package:mygameslist_flutter/styles.dart';
 import 'package:mygameslist_flutter/models/review_model.dart';
-import 'package:mygameslist_flutter/models/wiki_model.dart';
+import 'package:mygameslist_flutter/models/game_model.dart';
 import 'package:mygameslist_flutter/views/home_screen.dart';
 import 'package:mygameslist_flutter/views/login_screen.dart';
 import 'package:page_transition/page_transition.dart';
@@ -78,7 +78,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                 child: Text("error"),
               );
             } else {
-              WikiModel article = (state as DetailsLoadedState).article;
+              GameModel article = (state as DetailsLoadedState).game;
               List<ReviewModel> reviews = (state as DetailsLoadedState).reviews;
               return SingleChildScrollView(
                 child: Column(
@@ -133,9 +133,9 @@ class _DetailsScreenState extends State<DetailsScreen> {
                               return ReviewSubmissionWidget(
                                 onReviewed: (username, review) {
                                   BlocProvider.of<DetailsBloc>(context).add(
-                                    ReviewDetailsEvent(
+                                    SubmitReviewDetailsEvent(
                                       review: ReviewModel(
-                                        id: article.id,
+                                        articleId: article.id,
                                         username: username,
                                         review: review,
                                       ),

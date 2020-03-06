@@ -5,7 +5,7 @@ import 'package:mygameslist_flutter/blocs/list_bloc.dart';
 import 'package:mygameslist_flutter/components/article_widget.dart';
 import 'package:mygameslist_flutter/components/side_drawer.dart';
 import 'package:mygameslist_flutter/components/user_avatar.dart';
-import 'package:mygameslist_flutter/models/wiki_model.dart';
+import 'package:mygameslist_flutter/models/game_model.dart';
 import 'package:mygameslist_flutter/views/details_screen.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:animations/animations.dart';
@@ -49,7 +49,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
             } else {
               TabController _tabController =
                   TabController(length: 2, vsync: this);
-              List<WikiModel> _articles = (state as ListLoadedState).articles;
+              List<GameModel> _articles = (state as ListLoadedState).games;
               return NestedScrollView(
                 headerSliverBuilder:
                     (BuildContext context, bool innerBoxIsScrolled) {

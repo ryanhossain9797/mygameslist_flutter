@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart';
 import 'package:mygameslist_flutter/models/post_wiki_model.dart';
 import 'package:mygameslist_flutter/models/review_model.dart';
-import 'package:mygameslist_flutter/models/wiki_model.dart';
+import 'package:mygameslist_flutter/models/game_model.dart';
 
 class ApiHelper {
   static getAllReviews(String id) async {
@@ -19,9 +19,10 @@ class ApiHelper {
 
   static postReview(ReviewModel review) async {
     Response response = await post(
-        Uri.encodeFull("http://118.179.70.140:3693/comments"),
+        Uri.encodeFull(
+            "http://118.179.70.140:3693/articles/${review.articleId}/comments"),
         body: {
-          "article": review.id,
+          "article": review.articleId,
           "username": review.username,
           "comment": review.review
         });
@@ -30,13 +31,13 @@ class ApiHelper {
     return ReviewModel.fromJson(json: jsonResponse);
   }
 
-  static getAllArticles() async {
+  static getAllGames() async {
     Response response =
         await get(Uri.encodeFull("http://118.179.70.140:3693/articles"));
     var jsonResponse = (jsonDecode(response.body))["articles"];
-    List<WikiModel> articles = [];
+    List<GameModel> articles = [];
     for (var article in jsonResponse) {
-      articles.add(WikiModel.fromJson(json: article));
+      articles.add(GameModel.fromJson(json: article));
     }
     return articles;
   }
@@ -47,14 +48,14 @@ class ApiHelper {
         body: article.toMap());
     var jsonResponse = jsonDecode(response.body);
 
-    return WikiModel.fromJson(json: jsonResponse);
+    return GameModel.fromJson(json: jsonResponse);
   }
 
   static getArticleById(String id) async {
     Response response =
         await get(Uri.encodeFull("http://118.179.70.140:3693/articles/$id"));
     var jsonResponse = (jsonDecode(response.body))["article"];
-    return WikiModel.fromJson(json: jsonResponse);
+    return GameModel.fromJson(json: jsonResponse);
   }
 
   static deleteArticleById(String id) async {
@@ -62,7 +63,7 @@ class ApiHelper {
         await delete(Uri.encodeFull("http://118.179.70.140:3693/articles/$id"));
     var jsonResponse = jsonDecode(response.body);
 
-    return WikiModel.fromJson(json: jsonResponse);
+    return GameModel.fromJson(json: jsonResponse);
   }
 
   static patchArticleById(String id, List<Map<String, String>> edits) async {
@@ -72,7 +73,7 @@ class ApiHelper {
           headers: {'content-type': 'application/json'},
           body: json.encoder.convert(edits));
       var jsonResponse = jsonDecode(response.body);
-      return WikiModel.fromJson(json: jsonResponse);
+      return GameModel.fromJson(json: jsonResponse);
     } catch (e) {
       print(e);
     }

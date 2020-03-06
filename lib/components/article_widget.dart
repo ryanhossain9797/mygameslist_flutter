@@ -2,14 +2,14 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:mygameslist_flutter/models/wiki_model.dart';
+import 'package:mygameslist_flutter/models/game_model.dart';
 
 typedef Tap(NetworkImage);
 
 class ArticleWidget extends StatelessWidget {
   const ArticleWidget({Key key, @required this.article, this.onTap})
       : super(key: key);
-  final WikiModel article;
+  final GameModel article;
   final Tap onTap;
 
   @override

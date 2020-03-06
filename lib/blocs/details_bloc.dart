@@ -1,7 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mygameslist_flutter/api/api.dart';
 import 'package:mygameslist_flutter/models/review_model.dart';
-import 'package:mygameslist_flutter/models/wiki_model.dart';
+import 'package:mygameslist_flutter/models/game_model.dart';
 
 class DetailsEvent {}
 
@@ -10,10 +10,15 @@ class LoadDetailsEvent extends DetailsEvent {
   LoadDetailsEvent(this.id);
 }
 
-class ReviewDetailsEvent extends DetailsEvent {
+class SubmitReviewDetailsEvent extends DetailsEvent {
   final ReviewModel review;
 
-  ReviewDetailsEvent({this.review});
+  SubmitReviewDetailsEvent({this.review});
+}
+
+class DeleteReviewDetailsEvent extends DetailsEvent {
+  final String reviewId;
+  DeleteReviewDetailsEvent({this.reviewId});
 }
 
 class DetailsLoadState {}
@@ -21,9 +26,9 @@ class DetailsLoadState {}
 class DetailsLoadingState extends DetailsLoadState {}
 
 class DetailsLoadedState extends DetailsLoadState {
-  final WikiModel article;
+  final GameModel game;
   final List<ReviewModel> reviews;
-  DetailsLoadedState(this.article, this.reviews);
+  DetailsLoadedState(this.game, this.reviews);
 }
 
 class DetailsFailedState extends DetailsLoadState {}
@@ -39,24 +44,25 @@ class DetailsBloc extends Bloc<DetailsEvent, DetailsLoadState> {
       try {
         List<ReviewModel> reviews = await ApiHelper.getAllReviews(event.id);
         if (state is DetailsLoadedState) {
-          yield DetailsLoadedState(
-              (state as DetailsLoadedState).article, reviews);
+          yield DetailsLoadedState((state as DetailsLoadedState).game, reviews);
         } else {
-          WikiModel article = await ApiHelper.getArticleById(event.id);
-          yield DetailsLoadedState(article, reviews);
+          GameModel game = await ApiHelper.getArticleById(event.id);
+          yield DetailsLoadedState(game, reviews);
         }
       } catch (e) {
         yield DetailsFailedState();
       }
-    } else if (event is ReviewDetailsEvent) {
+    } else if (event is SubmitReviewDetailsEvent) {
       try {
         await ApiHelper.postReview(event.review);
-        WikiModel article = await ApiHelper.getArticleById(event.review.id);
-        List<ReviewModel> reviews = await ApiHelper.getAllReviews(article.id);
-        yield DetailsLoadedState(article, reviews);
+        GameModel game = await ApiHelper.getArticleById(event.review.articleId);
+        List<ReviewModel> reviews = await ApiHelper.getAllReviews(game.id);
+        yield DetailsLoadedState(game, reviews);
       } catch (e) {
         yield DetailsFailedState();
       }
+    } else if (event is DeleteReviewDetailsEvent) {
+      yield state;
     }
   }
 }
