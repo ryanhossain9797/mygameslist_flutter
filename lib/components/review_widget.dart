@@ -86,11 +86,9 @@ class _ReviewWidgetState extends State<ReviewWidget>
                                       Icons.delete,
                                     ),
                                     onPressed: () {
-                                      print("pressed");
                                       setState(() {
                                         deleting = true;
                                       });
-                                      print(deleting);
                                     },
                                   ),
                                 );

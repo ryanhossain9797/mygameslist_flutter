@@ -147,14 +147,24 @@ class _DetailsScreenState extends State<DetailsScreen> {
                               return Container();
                             }
                           } else {
-                            return GFButton(
-                              color: Colors.lightGreenAccent,
-                              child: Text("Sign in to review"),
-                              onPressed: () => Navigator.push(
-                                context,
-                                PageTransition(
-                                  child: LoginScreen(),
-                                  type: PageTransitionType.fade,
+                            return Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(vertical: 10.0),
+                              child: GFButton(
+                                size: 50,
+                                color: Colors.lightGreenAccent,
+                                child: Center(
+                                  child: Text(
+                                    "Sign in to review",
+                                    style: TextStyle(color: Colors.grey[800]),
+                                  ),
+                                ),
+                                onPressed: () => Navigator.push(
+                                  context,
+                                  PageTransition(
+                                    child: LoginScreen(),
+                                    type: PageTransitionType.fade,
+                                  ),
                                 ),
                               ),
                             );
