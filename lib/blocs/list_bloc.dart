@@ -6,6 +6,8 @@ class ListLoadEvent {}
 
 class ListLoadState {}
 
+class ListInitialState extends ListLoadState {}
+
 class ListLoadingState extends ListLoadState {}
 
 class ListLoadedState extends ListLoadState {
@@ -17,15 +19,18 @@ class ListFailedState extends ListLoadState {}
 
 class ListBloc extends Bloc<ListLoadEvent, ListLoadState> {
   @override
-  ListLoadState get initialState => ListLoadingState();
+  ListLoadState get initialState => ListInitialState();
 
   @override
   Stream<ListLoadState> mapEventToState(ListLoadEvent event) async* {
+    
     yield ListLoadingState();
     try {
       List<GameModel> games = await ApiHelper.getAllGames();
+      print("list load succeeded");
       yield ListLoadedState(games);
     } catch (e) {
+      print("list load failed");
       yield ListFailedState();
     }
   }

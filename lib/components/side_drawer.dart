@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:mygameslist_flutter/views/practice_screen.dart';
 
 class SideDrawer extends StatefulWidget {
   @override
@@ -44,7 +46,19 @@ class _SideDrawerState extends State<SideDrawer> {
                     });
                   },
                 )
-              : Container()
+              : Container(),
+          ListTile(
+            onTap: () {
+              Navigator.push(
+                context,
+                PageTransition(
+                  type: PageTransitionType.fade,
+                  child: PracticeScreen(),
+                ),
+              );
+            },
+            title: Text("Practice Screen"),
+          ),
         ],
       ),
     );

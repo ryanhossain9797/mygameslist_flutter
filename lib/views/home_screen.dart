@@ -17,16 +17,65 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   @override
+  void initState() {
+    BlocProvider.of<ListBloc>(context).add(ListLoadEvent());
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    if (!(BlocProvider.of<ListBloc>(context).state is ListLoadedState)) {
-      BlocProvider.of<ListBloc>(context).add(ListLoadEvent());
-    }
+    // if (!(BlocProvider.of<ListBloc>(context).state is ListInitialState)) {
+
+    // }
+    TabController _tabController = TabController(length: 2, vsync: this);
     return Scaffold(
       drawer: SideDrawer(),
-      body: Container(
-        child: BlocBuilder<ListBloc, ListLoadState>(
+      body: NestedScrollView(
+        headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+          return [
+            //-------------------------------------------------AppBar
+            SliverAppBar(
+              centerTitle: true,
+              title: Text(
+                "MyGamesList",
+                style: TextStyle(
+                    fontFamily: 'Poppins', fontWeight: FontWeight.bold),
+              ),
+              automaticallyImplyLeading: true,
+              actions: <Widget>[
+                //-------------------------------------------User Avatar
+                UserAvatar(),
+              ],
+              pinned: true,
+
+              //----------------------------------------------AppBar Background Image
+              flexibleSpace: FlexibleSpaceBar(
+                background: Image.asset(
+                  'images/header.jpg',
+                  fit: BoxFit.cover,
+                  colorBlendMode: BlendMode.darken,
+                  color: Color(0x66000000),
+                ),
+              ),
+              expandedHeight: 180,
+
+              //----------------------------------------------Tab Buttons
+              bottom: TabBar(
+                indicatorColor: Colors.lightGreenAccent,
+                controller: _tabController,
+                tabs: <Widget>[
+                  Tab(child: Icon(Icons.list)),
+                  Tab(child: Icon(Icons.favorite)),
+                ],
+              ),
+            ),
+          ];
+        },
+
+        //-----------------------------------------------------Tab Body
+        body: BlocBuilder<ListBloc, ListLoadState>(
           builder: (context, state) {
-            if (state is ListLoadingState) {
+            if (state is ListLoadingState || state is ListInitialState) {
               return Center(child: CircularProgressIndicator());
             } else if (state is ListFailedState) {
               //------------------------------------------------Load Error
@@ -47,91 +96,44 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                 ),
               );
             } else {
-              TabController _tabController =
-                  TabController(length: 2, vsync: this);
               List<GameModel> _articles = (state as ListLoadedState).games;
-              return NestedScrollView(
-                headerSliverBuilder:
-                    (BuildContext context, bool innerBoxIsScrolled) {
-                  return [
-                    //-------------------------------------------------AppBar
-                    SliverAppBar(
-                      centerTitle: true,
-                      title: Text(
-                        "MyGamesList",
-                        style: TextStyle(
-                            fontFamily: 'Poppins', fontWeight: FontWeight.bold),
-                      ),
-                      automaticallyImplyLeading: true,
-                      actions: <Widget>[
-                        //-------------------------------------------User Avatar
-                        UserAvatar(),
-                      ],
-                      pinned: true,
-
-                      //----------------------------------------------AppBar Background Image
-                      flexibleSpace: FlexibleSpaceBar(
-                        background: Image.asset(
-                          'images/header.jpg',
-                          fit: BoxFit.cover,
-                          colorBlendMode: BlendMode.darken,
-                          color: Color(0x66000000),
-                        ),
-                      ),
-                      expandedHeight: 180,
-
-                      //----------------------------------------------Tab Buttons
-                      bottom: TabBar(
-                        indicatorColor: Colors.lightGreenAccent,
-                        controller: _tabController,
-                        tabs: <Widget>[
-                          Tab(child: Icon(Icons.list)),
-                          Tab(child: Icon(Icons.favorite)),
-                        ],
-                      ),
-                    ),
-                  ];
-                },
-
-                //-----------------------------------------------------Tab Body
-                body: TabBarView(
-                  controller: _tabController,
-                  children: [
-                    //--------------------------------------------------Tab 1
-                    MediaQuery.removePadding(
-                      context: context,
-                      removeTop: true,
-                      child: ListView.builder(
-                        itemCount: _articles.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          //-------------------------------------------All Game Articles
-                          return ArticleWidget(
-                            article: _articles[index],
-                            onTap: (image) {
-                              Navigator.push(
-                                context,
-                                PageTransition(
-                                  type: PageTransitionType.fade,
-                                  child: DetailsScreen(
-                                    tempImage: image,
-                                    id: _articles[index].id,
-                                  ),
+              return TabBarView(
+                controller: _tabController,
+                children: [
+                  //--------------------------------------------------Tab 1
+                  MediaQuery.removePadding(
+                    context: context,
+                    removeTop: true,
+                    child: ListView.builder(
+                      itemCount: _articles.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        //-------------------------------------------All Game Articles
+                        return ArticleWidget(
+                          article: _articles[index],
+                          onTap: (image) {
+                            Navigator.push(
+                              context,
+                              PageTransition(
+                                type: PageTransitionType.fade,
+                                child: DetailsScreen(
+                                  tempImage: image,
+                                  id: _articles[index].id,
                                 ),
-                              );
-                            },
-                          );
-                        },
-                      ),
+                              ),
+                            );
+                          },
+                        );
+                      },
                     ),
+                  ),
 
-                    //----------------------------------------------Tab 2
-                    Container(
-                      child: Center(
-                        child: Text("TAB 2"),
-                      ),
-                    )
-                  ],
-                ),
+                  //----------------------------------------------Tab 2
+                  Container(
+                    child: Center(
+                      child: Text("TAB 2"),
+                    ),
+                  )
+                ],
               );
             }
           },
