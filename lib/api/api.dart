@@ -14,6 +14,7 @@ class ApiHelper {
     for (var review in jsonResponse) {
       reviews.add(ReviewModel.fromJson(json: review));
     }
+    print("APIGETALLREVIEWS: total reviews: ${reviews.length}");
     return reviews;
   }
 
@@ -42,7 +43,7 @@ class ApiHelper {
     return articles;
   }
 
-  static postArticle(PostWiki article) async {
+  static postGame(PostWiki article) async {
     Response response = await post(
         Uri.encodeFull("http://118.179.70.140:3693/articles"),
         body: article.toMap());
@@ -51,14 +52,19 @@ class ApiHelper {
     return GameModel.fromJson(json: jsonResponse);
   }
 
-  static getArticleById(String id) async {
-    Response response =
-        await get(Uri.encodeFull("http://118.179.70.140:3693/articles/$id"));
-    var jsonResponse = (jsonDecode(response.body))["article"];
-    return GameModel.fromJson(json: jsonResponse);
+  static getGameById(String id) async {
+    try {
+      Response response =
+          await get(Uri.encodeFull("http://118.179.70.140:3693/articles/$id"));
+      var jsonResponse = (jsonDecode(response.body))["article"];
+
+      return GameModel.fromJson(json: jsonResponse);
+    } catch (e) {
+      print("APIGETGAMEBYID: $e");
+    }
   }
 
-  static deleteArticleById(String id) async {
+  static deleteGameById(String id) async {
     Response response =
         await delete(Uri.encodeFull("http://118.179.70.140:3693/articles/$id"));
     var jsonResponse = jsonDecode(response.body);
@@ -66,7 +72,7 @@ class ApiHelper {
     return GameModel.fromJson(json: jsonResponse);
   }
 
-  static patchArticleById(String id, List<Map<String, String>> edits) async {
+  static patchGameById(String id, List<Map<String, String>> edits) async {
     try {
       Response response = await patch(
           Uri.encodeFull("http://118.179.70.140:3693/articles/$id"),

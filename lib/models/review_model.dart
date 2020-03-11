@@ -8,8 +8,12 @@ class ReviewModel {
   ReviewModel({this.articleId, this.username, this.review});
 
   ReviewModel.fromJson({@required Map<String, dynamic> json}) {
-    articleId = json["_id"];
-    username = json["username"];
-    review = json["comment"];
+    try {
+      articleId = json["_id"];
+      username = json["username"];
+      review = json["comment"];
+    } catch (e) {
+      print(e);
+    }
   }
 }

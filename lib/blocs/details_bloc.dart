@@ -42,20 +42,27 @@ class DetailsBloc extends Bloc<DetailsEvent, DetailsLoadState> {
     if (event is LoadDetailsEvent) {
       yield DetailsLoadingState();
       try {
+        print("LISTBLOC: loading reviews");
         List<ReviewModel> reviews = await ApiHelper.getAllReviews(event.id);
+        print("LISTBLOC: got ${reviews.length} reviews from api");
         if (state is DetailsLoadedState) {
+          print("LISTBLOC: loading new reviews with old game");
           yield DetailsLoadedState((state as DetailsLoadedState).game, reviews);
         } else {
-          GameModel game = await ApiHelper.getArticleById(event.id);
+          print("LISTBLOC: loading game with details and reviews");
+          GameModel game = await ApiHelper.getGameById(event.id);
+          print("LISTBLOC: loaded new game is " + game.title);
           yield DetailsLoadedState(game, reviews);
         }
       } catch (e) {
+        print("LISTBLOC: failed to load details");
+        print(e);
         yield DetailsFailedState();
       }
     } else if (event is SubmitReviewDetailsEvent) {
       try {
         await ApiHelper.postReview(event.review);
-        GameModel game = await ApiHelper.getArticleById(event.review.articleId);
+        GameModel game = await ApiHelper.getGameById(event.review.articleId);
         List<ReviewModel> reviews = await ApiHelper.getAllReviews(game.id);
         yield DetailsLoadedState(game, reviews);
       } catch (e) {
