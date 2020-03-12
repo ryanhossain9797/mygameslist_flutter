@@ -111,62 +111,67 @@ class _ReviewWidgetState extends State<ReviewWidget>
                         ],
                       ),
                     )
-                  : Row(
-                      children: <Widget>[
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.all(5),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                Text(widget.review.username,
-                                    style:
-                                        boldGreenText.copyWith(fontSize: 22)),
-                                SizedBox(
-                                  height: 5,
+                  : Padding(
+                      padding: const EdgeInsets.all(5),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Row(
+                            children: <Widget>[
+                              Expanded(
+                                child: Text(
+                                  widget.review.username,
+                                  style: boldGreenText.copyWith(fontSize: 22),
                                 ),
-                                Text(
-                                  widget.review.review,
-                                  style: darkGreyText.copyWith(
-                                      color: Colors.white, fontSize: 18),
-                                ),
-                              ],
-                            ),
+                              ),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              //-------------------------------------Renders CROSS button if signed in and username matches review user
+                              BlocBuilder<AuthBloc, AuthState>(
+                                builder: (context, state) {
+                                  if (state is SignedInAuthState) {
+                                    if (state.username ==
+                                        widget.review.username) {
+                                      return CircleAvatar(
+                                        backgroundColor: accentColor,
+                                        child: IconButton(
+                                          splashColor: Colors.transparent,
+                                          color: darkGrey,
+                                          icon: Icon(
+                                            Icons.delete,
+                                          ),
+                                          onPressed: () {
+                                            setState(() {
+                                              deleting = true;
+                                            });
+                                          },
+                                        ),
+                                      );
+                                    } else {
+                                      return SizedBox(
+                                        width: 0,
+                                      );
+                                    }
+                                  } else {
+                                    return SizedBox(
+                                      width: 0,
+                                    );
+                                  }
+                                },
+                              )
+                            ],
                           ),
-                        ),
-                        //-------------------------------------Renders CROSS button if signed in and username matches review user
-                        BlocBuilder<AuthBloc, AuthState>(
-                          builder: (context, state) {
-                            if (state is SignedInAuthState) {
-                              if (state.username == widget.review.username) {
-                                return CircleAvatar(
-                                  backgroundColor: accentColor,
-                                  child: IconButton(
-                                    splashColor: Colors.transparent,
-                                    color: darkGrey,
-                                    icon: Icon(
-                                      Icons.delete,
-                                    ),
-                                    onPressed: () {
-                                      setState(() {
-                                        deleting = true;
-                                      });
-                                    },
-                                  ),
-                                );
-                              } else {
-                                return SizedBox(
-                                  width: 0,
-                                );
-                              }
-                            } else {
-                              return SizedBox(
-                                width: 0,
-                              );
-                            }
-                          },
-                        )
-                      ],
+                          SizedBox(
+                            height: 20,
+                          ),
+                          Text(
+                            widget.review.review,
+                            style: darkGreyText.copyWith(
+                                color: Colors.white, fontSize: 12),
+                          ),
+                        ],
+                      ),
                     );
             },
           ),

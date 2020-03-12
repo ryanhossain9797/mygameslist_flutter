@@ -102,12 +102,9 @@ class _DetailsScreenState extends State<DetailsScreen> {
                           borderRadius: BorderRadius.circular(10),
                           color: darkGrey),
                       padding: EdgeInsets.all(10),
-                      child: Text(
-                        article.content,
-                        style: TextStyle(
-                          fontFamily: 'Poppins',
-                        ),
-                      ),
+                      child: Text(article.content,
+                          style: darkGreyText.copyWith(
+                              color: Colors.white, fontSize: 12)),
                     ),
                     SizedBox(
                       height: 20,
