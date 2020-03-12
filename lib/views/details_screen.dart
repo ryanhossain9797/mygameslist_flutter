@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:getflutter/components/button/gf_button.dart';
 import 'package:mygameslist_flutter/blocs/auth_bloc.dart';
 import 'package:mygameslist_flutter/blocs/details_bloc.dart';
+import 'package:mygameslist_flutter/colors.dart';
 import 'package:mygameslist_flutter/components/review_widget.dart';
 import 'package:mygameslist_flutter/components/side_drawer.dart';
 import 'package:mygameslist_flutter/components/user_avatar.dart';
@@ -32,6 +33,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
       body: NestedScrollView(
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
           return [
+            //-------------------------APPBAR
             SliverAppBar(
               pinned: true,
               expandedHeight: 180,
@@ -78,11 +80,13 @@ class _DetailsScreenState extends State<DetailsScreen> {
                 child: Text("error"),
               );
             } else {
+              //---------------------------------------------MAIN BODY
               GameModel article = (state as DetailsLoadedState).game;
               List<ReviewModel> reviews = (state as DetailsLoadedState).reviews;
               return SingleChildScrollView(
                 child: Column(
                   children: <Widget>[
+                    //-----------------------TITLE
                     Padding(
                       child: Text(
                         article.title,
@@ -93,7 +97,11 @@ class _DetailsScreenState extends State<DetailsScreen> {
                           EdgeInsets.symmetric(vertical: 20, horizontal: 10),
                     ),
                     Container(
-                      padding: EdgeInsets.symmetric(horizontal: 10),
+                      margin: EdgeInsets.symmetric(horizontal: 10),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: darkGrey),
+                      padding: EdgeInsets.all(10),
                       child: Text(
                         article.content,
                         style: TextStyle(
@@ -102,7 +110,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                       ),
                     ),
                     SizedBox(
-                      height: 10,
+                      height: 20,
                     ),
                     Text(
                       "Reviews",
@@ -150,6 +158,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                             return Padding(
                               padding:
                                   const EdgeInsets.symmetric(vertical: 10.0),
+                              //----------------------Sign in Prompt to review
                               child: GFButton(
                                 size: 50,
                                 color: Colors.lightGreenAccent,
@@ -170,6 +179,15 @@ class _DetailsScreenState extends State<DetailsScreen> {
                             );
                           }
                         },
+                      ),
+                    ),
+                    Container(
+                      height: 100,
+                      child: Center(
+                        child: Text(
+                          "Total ${reviews.length} reviews",
+                          style: boldGreenText.copyWith(fontSize: 24),
+                        ),
                       ),
                     ),
                   ],
@@ -210,6 +228,7 @@ class ReviewSubmissionWidget extends StatelessWidget {
                     (BlocProvider.of<AuthBloc>(context).state
                             as SignedInAuthState)
                         .username,
+                    style: boldGreenText.copyWith(fontSize: 18),
                   ),
                 )),
                 Expanded(
@@ -218,12 +237,15 @@ class ReviewSubmissionWidget extends StatelessWidget {
                       horizontal: 5,
                     ),
                     child: GFButton(
-                      textColor: Colors.grey[800],
+                      textColor: darkGrey,
                       color: Colors.lightGreenAccent,
                       borderShape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      child: Text("submit"),
+                      child: Text(
+                        "submit",
+                        style: darkGreyText.copyWith(fontSize: 18),
+                      ),
                       onPressed: () {
                         if ((BlocProvider.of<AuthBloc>(context).state
                                 as SignedInAuthState)
@@ -272,6 +294,8 @@ class InputBox extends StatelessWidget {
         cursorColor: Colors.lightGreenAccent,
       ),
       child: TextField(
+        //-------------------------TODO: Implement scroll
+        onTap: () {},
         controller: controller != null ? controller : TextEditingController(),
         decoration: InputDecoration(
           hintText: hint,

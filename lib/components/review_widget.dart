@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mygameslist_flutter/blocs/auth_bloc.dart';
 import 'package:mygameslist_flutter/blocs/details_bloc.dart';
+import 'package:mygameslist_flutter/colors.dart';
+import 'package:mygameslist_flutter/constants.dart';
 import 'package:mygameslist_flutter/models/review_model.dart';
+import 'package:mygameslist_flutter/styles.dart';
 
 class ReviewWidget extends StatefulWidget {
   const ReviewWidget({
@@ -28,46 +31,80 @@ class _ReviewWidgetState extends State<ReviewWidget>
       padding: EdgeInsets.all(10),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
-        color: Colors.grey[800],
+        color: darkGrey,
       ),
       child: AnimatedSize(
         vsync: this,
-        duration: Duration(milliseconds: 200),
+        duration: animationDuration,
         child: AnimatedSwitcher(
-          duration: Duration(milliseconds: 200),
+          duration: animationDuration,
           child: Builder(
             key: deleting ? deleteKey : displayKey,
             builder: (context) {
               return deleting
+                  //-----------------------DELETION WIDGET
                   ? Container(
                       height: 100,
-                      color: Colors.red,
-                      child: Row(
+                      child: Column(
                         children: <Widget>[
-                          Expanded(
-                            child: InkWell(
-                              onTap: () {
-                                setState(() {
-                                  deleting = false;
-                                });
-                              },
-                              child: Center(
-                                child: Text("Cancel"),
-                              ),
-                            ),
+                          Text(
+                            "Delete your review?",
+                            style: boldGreenText.copyWith(fontSize: 24),
+                          ),
+                          SizedBox(
+                            height: 10,
                           ),
                           Expanded(
-                            child: InkWell(
-                              onTap: () {
-                                BlocProvider.of<DetailsBloc>(context).add(
-                                    DeleteReviewDetailsEvent(
-                                        review: widget.review));
-                                setState(() {
-                                  deleting = false;
-                                });
-                              },
-                              child: Center(
-                                child: Text("Delete"),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(10),
+                              child: Row(
+                                children: <Widget>[
+                                  Expanded(
+                                    child: DecoratedBox(
+                                      decoration:
+                                          BoxDecoration(color: accentColor),
+                                      child: InkWell(
+                                        onTap: () {
+                                          setState(() {
+                                            deleting = false;
+                                          });
+                                        },
+                                        child: Center(
+                                          child: Text(
+                                            "Cancel",
+                                            style: darkGreyText.copyWith(
+                                                fontSize: 20),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: DecoratedBox(
+                                      decoration:
+                                          BoxDecoration(color: Colors.red),
+                                      child: InkWell(
+                                        onTap: () {
+                                          BlocProvider.of<DetailsBloc>(context)
+                                              .add(
+                                            DeleteReviewDetailsEvent(
+                                                review: widget.review),
+                                          );
+                                          setState(() {
+                                            deleting = false;
+                                          });
+                                        },
+                                        child: Center(
+                                          child: Text(
+                                            "Delete",
+                                            style: darkGreyText.copyWith(
+                                                fontSize: 20),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                           ),
@@ -77,21 +114,24 @@ class _ReviewWidgetState extends State<ReviewWidget>
                   : Row(
                       children: <Widget>[
                         Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Text(
-                                widget.review.username,
-                                style: TextStyle(
-                                  color: Colors.lightGreenAccent,
-                                  fontSize: 20,
+                          child: Padding(
+                            padding: const EdgeInsets.all(5),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Text(widget.review.username,
+                                    style:
+                                        boldGreenText.copyWith(fontSize: 22)),
+                                SizedBox(
+                                  height: 5,
                                 ),
-                              ),
-                              SizedBox(
-                                height: 10,
-                              ),
-                              Text(widget.review.review)
-                            ],
+                                Text(
+                                  widget.review.review,
+                                  style: darkGreyText.copyWith(
+                                      color: Colors.white, fontSize: 18),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                         //-------------------------------------Renders CROSS button if signed in and username matches review user
@@ -100,10 +140,10 @@ class _ReviewWidgetState extends State<ReviewWidget>
                             if (state is SignedInAuthState) {
                               if (state.username == widget.review.username) {
                                 return CircleAvatar(
-                                  backgroundColor: Colors.lightGreenAccent,
+                                  backgroundColor: accentColor,
                                   child: IconButton(
                                     splashColor: Colors.transparent,
-                                    color: Colors.grey[800],
+                                    color: darkGrey,
                                     icon: Icon(
                                       Icons.delete,
                                     ),
