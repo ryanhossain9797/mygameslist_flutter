@@ -59,6 +59,7 @@ class DetailsBloc extends Bloc<DetailsEvent, DetailsLoadState> {
         yield DetailsFailedState();
       }
     } else if (event is SubmitReviewDetailsEvent) {
+      //yield DetailsLoadingState();
       try {
         await ApiHelper.postReview(event.review);
         GameModel game = await ApiHelper.getGameById(event.review.articleId);
@@ -68,6 +69,7 @@ class DetailsBloc extends Bloc<DetailsEvent, DetailsLoadState> {
         yield DetailsFailedState();
       }
     } else if (event is DeleteReviewDetailsEvent) {
+      //yield DetailsLoadingState();
       try {
         await ApiHelper.deleteReviewById(
             aid: event.review.articleId,

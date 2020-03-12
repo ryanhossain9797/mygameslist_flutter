@@ -62,6 +62,9 @@ class _ReviewWidgetState extends State<ReviewWidget>
                                 BlocProvider.of<DetailsBloc>(context).add(
                                     DeleteReviewDetailsEvent(
                                         review: widget.review));
+                                setState(() {
+                                  deleting = false;
+                                });
                               },
                               child: Center(
                                 child: Text("Delete"),

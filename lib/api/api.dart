@@ -32,8 +32,12 @@ class ApiHelper {
   }
 
   static deleteReviewById({String aid, String cid, String username}) async {
-    Response response = await delete(Uri.encodeFull(
-        "http://118.179.70.140:3693/articles/$aid/comments/$cid"));
+    print("API_DELETE_REVIEW: username is $username");
+    Response response = await delete(
+      Uri.encodeFull("http://118.179.70.140:3693/articles/$aid/comments/$cid"),
+      headers: {"username": username},
+    );
+
     var jsonResponse = jsonDecode(response.body);
 
     return GameModel.fromJson(json: jsonResponse);
