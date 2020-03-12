@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mygameslist_flutter/blocs/auth_bloc.dart';
+import 'package:mygameslist_flutter/blocs/details_bloc.dart';
 import 'package:mygameslist_flutter/models/review_model.dart';
 
 class ReviewWidget extends StatefulWidget {
@@ -41,15 +42,33 @@ class _ReviewWidgetState extends State<ReviewWidget>
                   ? Container(
                       height: 100,
                       color: Colors.red,
-                      child: InkWell(
-                        onTap: () {
-                          setState(() {
-                            deleting = false;
-                          });
-                        },
-                        child: Center(
-                          child: Text("Cancel"),
-                        ),
+                      child: Row(
+                        children: <Widget>[
+                          Expanded(
+                            child: InkWell(
+                              onTap: () {
+                                setState(() {
+                                  deleting = false;
+                                });
+                              },
+                              child: Center(
+                                child: Text("Cancel"),
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            child: InkWell(
+                              onTap: () {
+                                BlocProvider.of<DetailsBloc>(context).add(
+                                    DeleteReviewDetailsEvent(
+                                        review: widget.review));
+                              },
+                              child: Center(
+                                child: Text("Delete"),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     )
                   : Row(

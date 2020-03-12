@@ -12,13 +12,12 @@ class LoadDetailsEvent extends DetailsEvent {
 
 class SubmitReviewDetailsEvent extends DetailsEvent {
   final ReviewModel review;
-
   SubmitReviewDetailsEvent({this.review});
 }
 
 class DeleteReviewDetailsEvent extends DetailsEvent {
-  final String reviewId;
-  DeleteReviewDetailsEvent({this.reviewId});
+  final ReviewModel review;
+  DeleteReviewDetailsEvent({this.review});
 }
 
 class DetailsLoadState {}
@@ -42,20 +41,20 @@ class DetailsBloc extends Bloc<DetailsEvent, DetailsLoadState> {
     if (event is LoadDetailsEvent) {
       yield DetailsLoadingState();
       try {
-        print("LISTBLOC: loading reviews");
+        print("DETAILSBLOC: loading reviews");
         List<ReviewModel> reviews = await ApiHelper.getAllReviews(event.id);
-        print("LISTBLOC: got ${reviews.length} reviews from api");
+        print("DETAILSBLOC: got ${reviews.length} reviews from api");
         if (state is DetailsLoadedState) {
-          print("LISTBLOC: loading new reviews with old game");
+          print("DETAILSBLOC: loading new reviews with old game");
           yield DetailsLoadedState((state as DetailsLoadedState).game, reviews);
         } else {
-          print("LISTBLOC: loading game with details and reviews");
+          print("DETAILSBLOC: loading game with details and reviews");
           GameModel game = await ApiHelper.getGameById(event.id);
-          print("LISTBLOC: loaded new game is " + game.title);
+          print("DETAILSBLOC: loaded new game is " + game.title);
           yield DetailsLoadedState(game, reviews);
         }
       } catch (e) {
-        print("LISTBLOC: failed to load details");
+        print("DETAILSBLOC: failed to load details");
         print(e);
         yield DetailsFailedState();
       }
@@ -69,7 +68,19 @@ class DetailsBloc extends Bloc<DetailsEvent, DetailsLoadState> {
         yield DetailsFailedState();
       }
     } else if (event is DeleteReviewDetailsEvent) {
-      yield state;
+      try {
+        await ApiHelper.deleteReviewById(
+            aid: event.review.articleId,
+            cid: event.review.id,
+            username: event.review.username);
+        print("DETAILSBLOC: deleted, reloading");
+        GameModel game = await ApiHelper.getGameById(event.review.articleId);
+        List<ReviewModel> reviews = await ApiHelper.getAllReviews(game.id);
+        yield DetailsLoadedState(game, reviews);
+      } catch (e) {
+        print("DETAILSBLOC: failed to delete $e");
+        yield DetailsFailedState();
+      }
     }
   }
 }

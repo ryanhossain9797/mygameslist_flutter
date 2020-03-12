@@ -17,4 +17,9 @@ class GameModel {
     content = json["content"];
     imgurl = json["imgurl"];
   }
+
+  Map toMap() {
+    Map mapped = {"title": title, "content": content, "imgurl": imgurl};
+    return mapped;
+  }
 }

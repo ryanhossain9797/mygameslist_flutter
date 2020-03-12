@@ -1,14 +1,13 @@
 import 'dart:convert';
 
 import 'package:http/http.dart';
-import 'package:mygameslist_flutter/models/post_wiki_model.dart';
 import 'package:mygameslist_flutter/models/review_model.dart';
 import 'package:mygameslist_flutter/models/game_model.dart';
 
 class ApiHelper {
   static getAllReviews(String id) async {
-    var uri = Uri.http("118.179.70.140:3693", "articles/$id/comments");
-    Response response = await get(uri);
+    Response response = await get(
+        Uri.encodeFull("http://118.179.70.140:3693/articles/$id/comments"));
     var jsonResponse = (jsonDecode(response.body))["comments"];
     List<ReviewModel> reviews = [];
     for (var review in jsonResponse) {
@@ -32,6 +31,14 @@ class ApiHelper {
     return ReviewModel.fromJson(json: jsonResponse);
   }
 
+  static deleteReviewById({String aid, String cid, String username}) async {
+    Response response = await delete(Uri.encodeFull(
+        "http://118.179.70.140:3693/articles/$aid/comments/$cid"));
+    var jsonResponse = jsonDecode(response.body);
+
+    return GameModel.fromJson(json: jsonResponse);
+  }
+
   static getAllGames() async {
     Response response =
         await get(Uri.encodeFull("http://118.179.70.140:3693/articles"));
@@ -43,10 +50,10 @@ class ApiHelper {
     return articles;
   }
 
-  static postGame(PostWiki article) async {
+  static postGame(GameModel game) async {
     Response response = await post(
         Uri.encodeFull("http://118.179.70.140:3693/articles"),
-        body: article.toMap());
+        body: game.toMap());
     var jsonResponse = jsonDecode(response.body);
 
     return GameModel.fromJson(json: jsonResponse);
