@@ -1,20 +1,21 @@
 import 'dart:ui';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:mygameslist_flutter/models/game_model.dart';
 
 typedef Tap(NetworkImage);
 
-class ArticleWidget extends StatelessWidget {
-  const ArticleWidget({Key key, @required this.article, this.onTap})
+class GameWidget extends StatelessWidget {
+  const GameWidget({Key key, @required this.game, this.onTap})
       : super(key: key);
-  final GameModel article;
+  final GameModel game;
   final Tap onTap;
 
   @override
   Widget build(BuildContext context) {
-    NetworkImage image = NetworkImage(article.imgurl);
+    CachedNetworkImageProvider image = CachedNetworkImageProvider(game.imgurl);
     return InkWell(
       onTap: () {
         onTap(image);
@@ -30,7 +31,7 @@ class ArticleWidget extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Hero(
-                tag: article.id,
+                tag: game.id,
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(5),
                   child: Image(
@@ -42,7 +43,7 @@ class ArticleWidget extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.all(5),
                 child: Text(
-                  article.title,
+                  game.title,
                   style: TextStyle(
                       color: Colors.white, fontFamily: "Poppins", fontSize: 24),
                 ),

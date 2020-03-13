@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mygameslist_flutter/blocs/list_bloc.dart';
-import 'package:mygameslist_flutter/components/article_widget.dart';
+import 'package:mygameslist_flutter/components/game_widget.dart';
 import 'package:mygameslist_flutter/components/side_drawer.dart';
 import 'package:mygameslist_flutter/components/user_avatar.dart';
 import 'package:mygameslist_flutter/models/game_model.dart';
@@ -108,9 +108,10 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                       itemCount: _articles.length,
                       itemBuilder: (BuildContext context, int index) {
                         //-------------------------------------------All Game Articles
-                        return ArticleWidget(
-                          article: _articles[index],
+                        return GameWidget(
+                          game: _articles[index],
                           onTap: (image) {
+                            //--------------------TODO {LoadDetailEvent here instead?}
                             Navigator.push(
                               context,
                               PageTransition(

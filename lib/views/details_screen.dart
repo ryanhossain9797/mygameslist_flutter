@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:getflutter/components/button/gf_button.dart';
@@ -15,7 +16,7 @@ import 'package:mygameslist_flutter/views/login_screen.dart';
 import 'package:page_transition/page_transition.dart';
 
 class DetailsScreen extends StatefulWidget {
-  final NetworkImage tempImage;
+  final CachedNetworkImageProvider tempImage;
   final String id;
   DetailsScreen({this.tempImage, this.id});
   @override
