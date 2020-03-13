@@ -30,7 +30,11 @@ class _ReviewWidgetState extends State<ReviewWidget>
       margin: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
       padding: EdgeInsets.all(10),
       decoration: BoxDecoration(
-        borderRadius: primaryCircleBorderRadius,
+        borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(5),
+            topRight: Radius.circular(30),
+            bottomLeft: Radius.circular(30),
+            bottomRight: Radius.circular(30)),
         color: darkGreyColor,
       ),
       child: AnimatedSize(

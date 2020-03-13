@@ -13,6 +13,7 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
+    //-----------------------------------Start initial load
     BlocProvider.of<ListBloc>(context).add(ListLoadEvent());
     super.initState();
   }
@@ -21,7 +22,7 @@ class _SplashScreenState extends State<SplashScreen> {
   Widget build(BuildContext context) {
     return BlocListener<ListBloc, ListLoadState>(
       listener: (context, state) {
-        print("SPLASH_SCREEN: state changed");
+        //-------------------------------Splash Screen stays until initial load
         if (!(state is ListLoadingState || state is ListInitialState)) {
           Navigator.pushReplacement(
             context,

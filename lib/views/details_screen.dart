@@ -109,14 +109,13 @@ class _DetailsScreenState extends State<DetailsScreen> {
                     ),
                     //-----------------------DESCRIPTION
                     Container(
-                      margin: EdgeInsets.symmetric(horizontal: 10),
-                      decoration: BoxDecoration(
-                          borderRadius: primaryCircleBorderRadius,
-                          color: darkGreyColor),
-                      padding: EdgeInsets.all(10),
-                      child: Text(article.content,
-                          style: darkGreyText.copyWith(
-                              color: Colors.white, fontSize: 12)),
+                      decoration: BoxDecoration(color: darkGreyColor),
+                      padding: EdgeInsets.all(20),
+                      child: Text(
+                        article.content,
+                        style: darkGreyText.copyWith(
+                            color: Colors.white, fontSize: 12),
+                      ),
                     ),
                     //Padding
                     SizedBox(
