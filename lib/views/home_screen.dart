@@ -14,15 +14,18 @@ import 'package:mygameslist_flutter/views/details_screen.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:animations/animations.dart';
 
-class MyHomePage extends StatefulWidget {
+class HomeScreen extends StatefulWidget {
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  _HomeScreenState createState() => _HomeScreenState();
 }
 
-class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
+class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   @override
   void initState() {
-    BlocProvider.of<ListBloc>(context).add(ListLoadEvent());
+    var state = BlocProvider.of<ListBloc>(context);
+    if (state is ListInitialState || state is ListLoadingState) {
+      BlocProvider.of<ListBloc>(context).add(ListLoadEvent());
+    }
     super.initState();
   }
 

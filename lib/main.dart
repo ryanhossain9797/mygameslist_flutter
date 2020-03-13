@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mygameslist_flutter/blocs/auth_bloc.dart';
 import 'package:mygameslist_flutter/blocs/list_bloc.dart';
 import 'package:mygameslist_flutter/views/home_screen.dart';
+import 'package:mygameslist_flutter/views/splash_screen.dart';
 
 import 'blocs/details_bloc.dart';
 
@@ -28,7 +29,7 @@ class MyApp extends StatelessWidget {
         darkTheme:
             ThemeData.dark().copyWith(accentColor: Colors.lightGreenAccent),
         themeMode: ThemeMode.dark,
-        home: MyHomePage(),
+        home: SplashScreen(),
       ),
     );
   }
