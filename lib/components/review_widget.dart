@@ -81,8 +81,8 @@ class _ReviewWidgetState extends State<ReviewWidget>
                                   ),
                                   Expanded(
                                     child: DecoratedBox(
-                                      decoration:
-                                          BoxDecoration(color: Colors.red),
+                                      decoration: BoxDecoration(
+                                          color: dangerWarningColor),
                                       child: InkWell(
                                         onTap: () {
                                           BlocProvider.of<DetailsBloc>(context)
@@ -111,6 +111,7 @@ class _ReviewWidgetState extends State<ReviewWidget>
                         ],
                       ),
                     )
+                  //---------------------------MAIN BODY
                   : Padding(
                       padding: const EdgeInsets.all(5),
                       child: Column(
@@ -118,10 +119,24 @@ class _ReviewWidgetState extends State<ReviewWidget>
                         children: <Widget>[
                           Row(
                             children: <Widget>[
-                              Expanded(
+                              //-----------------------First letter as avatar
+                              CircleAvatar(
+                                backgroundColor: lightAccentColor,
                                 child: Text(
-                                  widget.review.username,
-                                  style: boldGreenText.copyWith(fontSize: 22),
+                                  widget.review.username.substring(0, 1),
+                                  style: darkGreyText.copyWith(fontSize: 24),
+                                ),
+                              ),
+                              //-----------------------Rest of username
+                              Expanded(
+                                child: Padding(
+                                  padding:
+                                      const EdgeInsets.symmetric(horizontal: 3),
+                                  child: Text(
+                                    widget.review.username.substring(
+                                        1, widget.review.username.length),
+                                    style: boldGreenText.copyWith(fontSize: 22),
+                                  ),
                                 ),
                               ),
                               SizedBox(
@@ -134,7 +149,7 @@ class _ReviewWidgetState extends State<ReviewWidget>
                                     if (state.username ==
                                         widget.review.username) {
                                       return CircleAvatar(
-                                        backgroundColor: lightAccentColor,
+                                        backgroundColor: dangerWarningColor,
                                         child: IconButton(
                                           splashColor: Colors.transparent,
                                           color: darkGreyColor,
@@ -163,7 +178,30 @@ class _ReviewWidgetState extends State<ReviewWidget>
                             ],
                           ),
                           SizedBox(
-                            height: 20,
+                            height: 10,
+                          ),
+                          Row(
+                            children: <Widget>[
+                              CircleAvatar(
+                                radius: 25,
+                                child: Icon(
+                                  Icons.thumb_up,
+                                  size: 30,
+                                ),
+                                backgroundColor: Colors.transparent,
+                              ),
+                              CircleAvatar(
+                                radius: 25,
+                                child: Icon(
+                                  Icons.thumb_down,
+                                  size: 30,
+                                ),
+                                backgroundColor: Colors.transparent,
+                              ),
+                            ],
+                          ),
+                          SizedBox(
+                            height: 10,
                           ),
                           Text(
                             widget.review.review,

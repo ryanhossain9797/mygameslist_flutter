@@ -25,11 +25,7 @@ class UserAvatar extends StatelessWidget {
                 backgroundColor: Colors.lightGreenAccent,
                 child: Text(
                   state.username.toUpperCase().substring(0, 1),
-                  style: TextStyle(
-                      color: Colors.grey[800],
-                      fontFamily: 'Poppins',
-                      fontWeight: FontWeight.bold,
-                      fontSize: 24),
+                  style: darkGreyText.copyWith(fontSize: 24),
                 ),
               ),
             );
