@@ -30,14 +30,14 @@ class _ReviewWidgetState extends State<ReviewWidget>
       margin: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
       padding: EdgeInsets.all(10),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
-        color: darkGrey,
+        borderRadius: primaryCircleBorderRadius,
+        color: darkGreyColor,
       ),
       child: AnimatedSize(
         vsync: this,
-        duration: animationDuration,
+        duration: kAnimationDuration,
         child: AnimatedSwitcher(
-          duration: animationDuration,
+          duration: kAnimationDuration,
           child: Builder(
             key: deleting ? deleteKey : displayKey,
             builder: (context) {
@@ -61,8 +61,8 @@ class _ReviewWidgetState extends State<ReviewWidget>
                                 children: <Widget>[
                                   Expanded(
                                     child: DecoratedBox(
-                                      decoration:
-                                          BoxDecoration(color: accentColor),
+                                      decoration: BoxDecoration(
+                                          color: lightAccentColor),
                                       child: InkWell(
                                         onTap: () {
                                           setState(() {
@@ -134,10 +134,10 @@ class _ReviewWidgetState extends State<ReviewWidget>
                                     if (state.username ==
                                         widget.review.username) {
                                       return CircleAvatar(
-                                        backgroundColor: accentColor,
+                                        backgroundColor: lightAccentColor,
                                         child: IconButton(
                                           splashColor: Colors.transparent,
-                                          color: darkGrey,
+                                          color: darkGreyColor,
                                           icon: Icon(
                                             Icons.delete,
                                           ),

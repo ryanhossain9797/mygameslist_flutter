@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
 
-final darkGrey = Colors.grey[800];
-final accentColor = Colors.lightGreenAccent;
+final darkGreyColor = Colors.grey[800];
+final lightAccentColor = Colors.lightGreenAccent;
+final darkAccentColor = Colors.greenAccent;

@@ -1,36 +1,36 @@
 import 'package:flutter/material.dart';
 import 'package:mygameslist_flutter/colors.dart';
+import 'package:mygameslist_flutter/constants.dart';
+
+final primaryCircleBorderRadius = BorderRadius.circular(kPrimaryRadiusValue);
 
 var boldGreenText = TextStyle(
   fontSize: 30,
   fontFamily: 'Poppins',
-  color: accentColor,
+  color: lightAccentColor,
 );
 var darkGreyText = TextStyle(
   fontSize: 30,
   fontFamily: 'Poppins',
-  color: darkGrey,
+  color: darkGreyColor,
 );
 var greyBorder = OutlineInputBorder(
-  borderRadius: BorderRadius.circular(10),
-  borderSide: BorderSide(
-    width: 2,
-    color: Colors.grey[800],
-  ),
+  borderRadius: primaryCircleBorderRadius,
+  borderSide: BorderSide(width: 2, color: darkGreyColor),
 );
 
 var lightGreenBorder = OutlineInputBorder(
-  borderRadius: BorderRadius.circular(10),
+  borderRadius: primaryCircleBorderRadius,
   borderSide: BorderSide(
     width: 2,
-    color: Colors.lightGreenAccent,
+    color: lightAccentColor,
   ),
 );
 
 var greenBorder = OutlineInputBorder(
-  borderRadius: BorderRadius.circular(10),
+  borderRadius: primaryCircleBorderRadius,
   borderSide: BorderSide(
     width: 2,
-    color: Colors.greenAccent,
+    color: darkAccentColor,
   ),
 );

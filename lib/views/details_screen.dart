@@ -2,9 +2,12 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:getflutter/components/button/gf_button.dart';
+import 'package:getflutter/components/loader/gf_loader.dart';
+import 'package:getflutter/types/gf_loader_type.dart';
 import 'package:mygameslist_flutter/blocs/auth_bloc.dart';
 import 'package:mygameslist_flutter/blocs/details_bloc.dart';
 import 'package:mygameslist_flutter/colors.dart';
+import 'package:mygameslist_flutter/components/loading_indicator.dart';
 import 'package:mygameslist_flutter/components/review_widget.dart';
 import 'package:mygameslist_flutter/components/side_drawer.dart';
 import 'package:mygameslist_flutter/components/user_avatar.dart';
@@ -25,10 +28,15 @@ class DetailsScreen extends StatefulWidget {
 
 class _DetailsScreenState extends State<DetailsScreen> {
   @override
-  Widget build(BuildContext context) {
+  void initState() {
     BlocProvider.of<DetailsBloc>(context).add(
       LoadDetailsEvent(widget.id),
     );
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       drawer: SideDrawer(),
       body: NestedScrollView(
@@ -73,15 +81,17 @@ class _DetailsScreenState extends State<DetailsScreen> {
         body: BlocBuilder<DetailsBloc, DetailsLoadState>(
           builder: (context, state) {
             if (state is DetailsLoadingState) {
+              //-----------------------LOADING
               return Center(
-                child: CircularProgressIndicator(),
+                child: LoadingIndicator(),
               );
             } else if (state is DetailsFailedState) {
+              //-----------------------ERROR
               return Center(
                 child: Text("error"),
               );
             } else {
-              //---------------------------------------------MAIN BODY
+              //-----------------------MAIN BODY
               GameModel article = (state as DetailsLoadedState).game;
               List<ReviewModel> reviews = (state as DetailsLoadedState).reviews;
               return SingleChildScrollView(
@@ -97,23 +107,27 @@ class _DetailsScreenState extends State<DetailsScreen> {
                       padding:
                           EdgeInsets.symmetric(vertical: 20, horizontal: 10),
                     ),
+                    //-----------------------DESCRIPTION
                     Container(
                       margin: EdgeInsets.symmetric(horizontal: 10),
                       decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          color: darkGrey),
+                          borderRadius: primaryCircleBorderRadius,
+                          color: darkGreyColor),
                       padding: EdgeInsets.all(10),
                       child: Text(article.content,
                           style: darkGreyText.copyWith(
                               color: Colors.white, fontSize: 12)),
                     ),
+                    //Padding
                     SizedBox(
                       height: 20,
                     ),
+                    //-----------------------REVIEWS HEADER
                     Text(
                       "Reviews",
                       style: boldGreenText,
                     ),
+                    //-----------------------REVIEWS
                     ListView.builder(
                       shrinkWrap: true,
                       primary: false,
@@ -122,6 +136,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                         return ReviewWidget(review: reviews[pos]);
                       },
                     ),
+                    //-----------------------BOTTOM AREA
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 10),
                       child: BlocBuilder<AuthBloc, AuthState>(
@@ -136,6 +151,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                               }
                             }
                             if (!reviewed) {
+                              //-----------------------NEW REVIEW WIDGET
                               return ReviewSubmissionWidget(
                                 onReviewed: (username, review) {
                                   BlocProvider.of<DetailsBloc>(context).add(
@@ -153,10 +169,10 @@ class _DetailsScreenState extends State<DetailsScreen> {
                               return Container();
                             }
                           } else {
+                            //-----------------------SIGN IN PROMPT
                             return Padding(
                               padding:
                                   const EdgeInsets.symmetric(vertical: 10.0),
-                              //----------------------Sign in Prompt to review
                               child: GFButton(
                                 size: 50,
                                 color: Colors.lightGreenAccent,
@@ -179,6 +195,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                         },
                       ),
                     ),
+                    //-----------------------FOOTER
                     Container(
                       height: 100,
                       child: Center(
@@ -235,11 +252,10 @@ class ReviewSubmissionWidget extends StatelessWidget {
                       horizontal: 5,
                     ),
                     child: GFButton(
-                      textColor: darkGrey,
+                      textColor: darkGreyColor,
                       color: Colors.lightGreenAccent,
                       borderShape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
+                          borderRadius: primaryCircleBorderRadius),
                       child: Text(
                         "submit",
                         style: darkGreyText.copyWith(fontSize: 18),

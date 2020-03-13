@@ -1,1 +1,2 @@
-const animationDuration = Duration(milliseconds: 200);
+const kAnimationDuration = Duration(milliseconds: 200);
+const kPrimaryRadiusValue = 5.0;

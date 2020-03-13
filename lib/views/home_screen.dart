@@ -1,8 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:getflutter/components/loader/gf_loader.dart';
+import 'package:getflutter/types/gf_loader_type.dart';
 import 'package:mygameslist_flutter/blocs/list_bloc.dart';
+import 'package:mygameslist_flutter/colors.dart';
 import 'package:mygameslist_flutter/components/game_widget.dart';
+import 'package:mygameslist_flutter/components/loading_indicator.dart';
 import 'package:mygameslist_flutter/components/side_drawer.dart';
 import 'package:mygameslist_flutter/components/user_avatar.dart';
 import 'package:mygameslist_flutter/models/game_model.dart';
@@ -76,7 +80,9 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
         body: BlocBuilder<ListBloc, ListLoadState>(
           builder: (context, state) {
             if (state is ListLoadingState || state is ListInitialState) {
-              return Center(child: CircularProgressIndicator());
+              return Center(
+                child: LoadingIndicator(),
+              );
             } else if (state is ListFailedState) {
               //------------------------------------------------Load Error
               return Center(
