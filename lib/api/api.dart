@@ -1,48 +1,12 @@
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:mygameslist_flutter/models/review_model.dart';
 import 'package:mygameslist_flutter/models/game_model.dart';
 
 class ApiHelper {
-  static getAllReviews(String id) async {
-    Response response = await get(
-        Uri.encodeFull("http://118.179.70.140:3693/articles/$id/comments"));
-    var jsonResponse = (jsonDecode(response.body))["comments"];
-    List<ReviewModel> reviews = [];
-    for (var review in jsonResponse) {
-      reviews.add(ReviewModel.fromJson(json: review));
-    }
-    print("APIGETALLREVIEWS: total reviews: ${reviews.length}");
-    return reviews;
-  }
-
-  static postReview(ReviewModel review) async {
-    Response response = await post(
-        Uri.encodeFull(
-            "http://118.179.70.140:3693/articles/${review.articleId}/comments"),
-        body: {
-          "article": review.articleId,
-          "username": review.username,
-          "comment": review.review
-        });
-    var jsonResponse = jsonDecode(response.body);
-
-    return ReviewModel.fromJson(json: jsonResponse);
-  }
-
-  static deleteReviewById({String aid, String cid, String username}) async {
-    print("API_DELETE_REVIEW: username is $username");
-    Response response = await delete(
-      Uri.encodeFull("http://118.179.70.140:3693/articles/$aid/comments/$cid"),
-      headers: {"username": username},
-    );
-
-    var jsonResponse = jsonDecode(response.body);
-
-    return GameModel.fromJson(json: jsonResponse);
-  }
-
+  //---------------------------------------------------------------REVIEW
   static getAllGames() async {
     Response response =
         await get(Uri.encodeFull("http://118.179.70.140:3693/articles"));
@@ -93,6 +57,69 @@ class ApiHelper {
       return GameModel.fromJson(json: jsonResponse);
     } catch (e) {
       print(e);
+    }
+  }
+
+  //---------------------------------------------------------------REVIEW
+  static getAllReviews(String id) async {
+    Response response = await get(
+        Uri.encodeFull("http://118.179.70.140:3693/articles/$id/comments"));
+    var jsonResponse = (jsonDecode(response.body))["comments"];
+    List<ReviewModel> reviews = [];
+    for (var review in jsonResponse) {
+      reviews.add(ReviewModel.fromJson(json: review));
+    }
+    print("APIGETALLREVIEWS: total reviews: ${reviews.length}");
+    return reviews;
+  }
+
+  static postReview(ReviewModel review) async {
+    Response response = await post(
+        Uri.encodeFull(
+            "http://118.179.70.140:3693/articles/${review.articleId}/comments"),
+        body: {
+          "article": review.articleId,
+          "username": review.username,
+          "comment": review.review
+        });
+    var jsonResponse = jsonDecode(response.body);
+
+    return ReviewModel.fromJson(json: jsonResponse);
+  }
+
+  static deleteReviewById({
+    @required String aid,
+    @required String cid,
+    @required String username,
+  }) async {
+    print("API_DELETE_REVIEW: username is $username");
+    Response response = await delete(
+      Uri.encodeFull("http://118.179.70.140:3693/articles/$aid/comments/$cid"),
+      headers: {"username": username},
+    );
+
+    var jsonResponse = jsonDecode(response.body);
+
+    return GameModel.fromJson(json: jsonResponse);
+  }
+
+  //---------------------------------------------------------------AUTH
+  static signUpWithEmailPass({
+    @required String email,
+    @required String username,
+    @required String password,
+  }) async {
+    print("API_SIGNUP: called $username $email $password");
+    Response response = await post(
+      Uri.encodeFull("http://118.179.70.140:3693/users/signup"),
+      body: {"username": username, "email": email, "password": password},
+    );
+
+    if (response.statusCode == 201) {
+      return true;
+    } else {
+      print(response.statusCode);
+      return false;
     }
   }
 }

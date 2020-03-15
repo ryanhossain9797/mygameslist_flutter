@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mygameslist_flutter/blocs/auth_bloc.dart';
-import 'package:mygameslist_flutter/components/side_drawer.dart';
+import 'package:mygameslist_flutter/api/api.dart';
+import 'package:mygameslist_flutter/blocs/signup_bloc.dart';
+import 'package:mygameslist_flutter/blocs/signup_bloc.dart';
+import 'package:mygameslist_flutter/colors.dart';
+import 'package:mygameslist_flutter/styles.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -9,49 +12,75 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  trySignup({
+    @required String email,
+    @required String username,
+    @required String password,
+  }) async {
+    print("$email $password $username");
+    BlocProvider.of<SignupBloc>(context).add(SignupSignupEvent(
+        email: email, username: username, password: password));
+  }
+
+  TextEditingController _emailController = TextEditingController();
+  TextEditingController _passwordController = TextEditingController();
+  TextEditingController _usernameController = TextEditingController();
   @override
   Widget build(BuildContext context) {
-    TextEditingController _controller = TextEditingController();
     return Scaffold(
-      drawer: SideDrawer(),
       appBar: AppBar(
         title: Text(
-          "Login",
-          style: TextStyle(
-            fontFamily: 'Poppins',
-            fontWeight: FontWeight.bold,
-          ),
+          "Login Screen",
+          style: boldGreenText,
         ),
-        centerTitle: true,
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Icon(
-            Icons.person,
-            size: 100,
-          ),
-          Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: TextField(
-              controller: _controller,
-              decoration: InputDecoration(
-                hintText: "username",
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: IconButton(
-              icon: Icon(Icons.person_add),
-              onPressed: () {
-                BlocProvider.of<AuthBloc>(context)
-                    .add(SignInAuthEvent(_controller.text));
-                Navigator.pop(context);
+      body: Center(
+        child: Column(
+          children: <Widget>[
+            BlocBuilder<SignupBloc, SignupState>(
+              builder: (context, state) {
+                return Text(state is SignupSuccessfulSignupState
+                    ? state.username
+                    : "Fail");
               },
             ),
-          )
-        ],
+            TextField(
+              controller: _emailController,
+              decoration:
+                  InputDecoration(border: lightGreenBorder, hintText: "email"),
+            ),
+            TextField(
+              controller: _usernameController,
+              decoration: InputDecoration(
+                  border: lightGreenBorder, hintText: "username"),
+            ),
+            TextField(
+              controller: _passwordController,
+              decoration: InputDecoration(
+                  border: lightGreenBorder, hintText: "password"),
+            ),
+            RawMaterialButton(
+              child: Text("Submit"),
+              onPressed: () {
+                trySignup(
+                  email: _emailController.text,
+                  username: _usernameController.text,
+                  password: _passwordController.text,
+                );
+              },
+            ),
+            SizedBox(height: 100),
+            Text("Sign up"),
+            TextField(
+              decoration:
+                  InputDecoration(border: lightGreenBorder, hintText: "email"),
+            ),
+            TextField(
+              decoration: InputDecoration(
+                  border: lightGreenBorder, hintText: "password"),
+            ),
+          ],
+        ),
       ),
     );
   }
