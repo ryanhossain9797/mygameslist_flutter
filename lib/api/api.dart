@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
+import 'package:mygameslist_flutter/models/login_result_model.dart';
 import 'package:mygameslist_flutter/models/review_model.dart';
 import 'package:mygameslist_flutter/models/game_model.dart';
 
@@ -120,6 +121,28 @@ class ApiHelper {
     } else {
       print(response.statusCode);
       return false;
+    }
+  }
+
+  static Future<LogInResult> logInWithEmailPass({
+    @required String email,
+    @required String password,
+  }) async {
+    print("API_LOGIN: called $email $password");
+    Response response = await post(
+      Uri.encodeFull("http://118.179.70.140:3693/users/login"),
+      body: {"email": email, "password": password},
+    );
+
+    if (response.statusCode == 200) {
+      var jsonResponse = jsonDecode(response.body);
+      String token = jsonResponse["token"];
+      String userName = jsonResponse["username"];
+      print(token);
+      return LogInResult(success: true, message: userName, token: token);
+    } else {
+      print(response.statusCode);
+      return LogInResult(success: false, message: "failed", token: "");
     }
   }
 }

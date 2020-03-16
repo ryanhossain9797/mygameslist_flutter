@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mygameslist_flutter/blocs/auth_bloc_fake.dart';
 import 'package:mygameslist_flutter/blocs/details_bloc.dart';
+import 'package:mygameslist_flutter/blocs/login_bloc.dart';
 import 'package:mygameslist_flutter/colors.dart';
 import 'package:mygameslist_flutter/constants.dart';
 import 'package:mygameslist_flutter/models/review_model.dart';
@@ -147,9 +147,9 @@ class _ReviewWidgetState extends State<ReviewWidget>
                                 width: 10,
                               ),
                               //-------------------------------------Renders CROSS button if signed in and username matches review user
-                              BlocBuilder<AuthBlocFake, AuthStateFake>(
+                              BlocBuilder<LoginBloc, LoginState>(
                                 builder: (context, state) {
-                                  if (state is SignedInAuthStateFake) {
+                                  if (state is LoggedInLoginState) {
                                     if (state.username ==
                                         widget.review.username) {
                                       return CircleAvatar(

@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:getflutter/components/button/gf_button.dart';
 import 'package:mygameslist_flutter/api/api.dart';
+import 'package:mygameslist_flutter/blocs/login_bloc.dart';
 import 'package:mygameslist_flutter/blocs/signup_bloc.dart';
 import 'package:mygameslist_flutter/blocs/signup_bloc.dart';
 import 'package:mygameslist_flutter/colors.dart';
+import 'package:mygameslist_flutter/components/auth_input_field.dart';
 import 'package:mygameslist_flutter/styles.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -22,64 +25,136 @@ class _LoginScreenState extends State<LoginScreen> {
         email: email, username: username, password: password));
   }
 
-  TextEditingController _emailController = TextEditingController();
-  TextEditingController _passwordController = TextEditingController();
-  TextEditingController _usernameController = TextEditingController();
+  tryLogin({
+    @required String email,
+    @required String password,
+  }) async {
+    BlocProvider.of<LoginBloc>(context)
+        .add(LoginLoginEvent(email: email, password: password));
+  }
+
+  TextEditingController _signupEmailController = TextEditingController();
+  TextEditingController _signupPasswordController = TextEditingController();
+  TextEditingController _signupUsernameController = TextEditingController();
+
+  TextEditingController _loginEmailController = TextEditingController();
+  TextEditingController _loginPasswordController = TextEditingController();
+  bool loginScreen = true;
+  var loginKey = Key("loginKey");
+  var signupKey = Key("signupKey");
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         title: Text(
-          "Login Screen",
-          style: boldGreenText,
+          loginScreen ? "Login Screen" : "Signup Screen",
+          style: boldGreenText.copyWith(fontSize: 24, color: Colors.white),
         ),
       ),
       body: Center(
-        child: Column(
-          children: <Widget>[
-            BlocBuilder<SignupBloc, SignupState>(
-              builder: (context, state) {
-                return Text(state is SignupSuccessfulSignupState
-                    ? state.username
-                    : "Fail");
-              },
-            ),
-            TextField(
-              controller: _emailController,
-              decoration:
-                  InputDecoration(border: lightGreenBorder, hintText: "email"),
-            ),
-            TextField(
-              controller: _usernameController,
-              decoration: InputDecoration(
-                  border: lightGreenBorder, hintText: "username"),
-            ),
-            TextField(
-              controller: _passwordController,
-              decoration: InputDecoration(
-                  border: lightGreenBorder, hintText: "password"),
-            ),
-            RawMaterialButton(
-              child: Text("Submit"),
-              onPressed: () {
-                trySignup(
-                  email: _emailController.text,
-                  username: _usernameController.text,
-                  password: _passwordController.text,
-                );
-              },
-            ),
-            SizedBox(height: 100),
-            Text("Sign up"),
-            TextField(
-              decoration:
-                  InputDecoration(border: lightGreenBorder, hintText: "email"),
-            ),
-            TextField(
-              decoration: InputDecoration(
-                  border: lightGreenBorder, hintText: "password"),
-            ),
-          ],
+        child: AnimatedSwitcher(
+          duration: Duration(milliseconds: 200),
+          child: Builder(
+            key: loginScreen ? loginKey : signupKey,
+            builder: (context) {
+              return loginScreen
+                  ? Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        BlocBuilder<LoginBloc, LoginState>(
+                          builder: (context, state) {
+                            if (state is LoggedInLoginState) {
+                              return Text(state.username);
+                            } else if (state is LoggedOutLoginState) {
+                              return Text(state.message);
+                            }
+                          },
+                        ),
+                        AuthInputField(
+                            controller: _loginEmailController,
+                            hintText: "email"),
+                        AuthInputField(
+                            obscureText: true,
+                            controller: _loginPasswordController,
+                            hintText: "password"),
+                        GFButton(
+                          color: lightAccentColor,
+                          textColor: darkGreyColor,
+                          child: Text("Submit"),
+                          onPressed: () {
+                            tryLogin(
+                              email: _loginEmailController.text,
+                              password: _loginPasswordController.text,
+                            );
+                            _loginEmailController.clear();
+                            _loginPasswordController.clear();
+                          },
+                        ),
+                        RawMaterialButton(
+                          child: Text(
+                            "New here? Sign Up",
+                            style: boldGreenText.copyWith(fontSize: 18),
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              loginScreen = false;
+                            });
+                          },
+                        ),
+                      ],
+                    )
+                  //----------------------------------Signup Screen
+                  : Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        BlocBuilder<SignupBloc, SignupState>(
+                          builder: (context, state) {
+                            return Text(state is SignupSuccessfulSignupState
+                                ? state.username
+                                : "Fail");
+                          },
+                        ),
+                        AuthInputField(
+                            controller: _signupEmailController,
+                            hintText: "email"),
+                        AuthInputField(
+                            controller: _signupUsernameController,
+                            hintText: "username"),
+                        AuthInputField(
+                            obscureText: true,
+                            controller: _signupPasswordController,
+                            hintText: "password"),
+                        GFButton(
+                          color: lightAccentColor,
+                          textColor: darkGreyColor,
+                          child: Text("Submit"),
+                          onPressed: () {
+                            trySignup(
+                              email: _signupEmailController.text,
+                              username: _signupUsernameController.text,
+                              password: _signupPasswordController.text,
+                            );
+                            _signupEmailController.clear();
+                            _signupPasswordController.clear();
+                            _signupUsernameController.clear();
+                          },
+                        ),
+                        RawMaterialButton(
+                          child: Text(
+                            "Already have an account? Log In",
+                            style: boldGreenText.copyWith(fontSize: 18),
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              loginScreen = true;
+                            });
+                          },
+                        ),
+                      ],
+                    );
+            },
+          ),
         ),
       ),
     );

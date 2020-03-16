@@ -4,8 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:getflutter/components/button/gf_button.dart';
 import 'package:getflutter/components/loader/gf_loader.dart';
 import 'package:getflutter/types/gf_loader_type.dart';
-import 'package:mygameslist_flutter/blocs/auth_bloc_fake.dart';
 import 'package:mygameslist_flutter/blocs/details_bloc.dart';
+import 'package:mygameslist_flutter/blocs/login_bloc.dart';
 import 'package:mygameslist_flutter/colors.dart';
 import 'package:mygameslist_flutter/components/loading_indicator.dart';
 import 'package:mygameslist_flutter/components/review_widget.dart';
@@ -15,7 +15,7 @@ import 'package:mygameslist_flutter/styles.dart';
 import 'package:mygameslist_flutter/models/review_model.dart';
 import 'package:mygameslist_flutter/models/game_model.dart';
 import 'package:mygameslist_flutter/views/home_screen.dart';
-import 'package:mygameslist_flutter/views/login_screen_fake.dart';
+import 'package:mygameslist_flutter/views/login_screen.dart';
 import 'package:page_transition/page_transition.dart';
 
 class DetailsScreen extends StatefulWidget {
@@ -138,9 +138,9 @@ class _DetailsScreenState extends State<DetailsScreen> {
                     //-----------------------BOTTOM AREA
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 10),
-                      child: BlocBuilder<AuthBlocFake, AuthStateFake>(
+                      child: BlocBuilder<LoginBloc, LoginState>(
                         builder: (context, state) {
-                          if (state is SignedInAuthStateFake) {
+                          if (state is LoggedInLoginState) {
                             String name = state.username;
                             bool reviewed = false;
                             for (ReviewModel review in reviews) {
@@ -184,7 +184,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                 onPressed: () => Navigator.push(
                                   context,
                                   PageTransition(
-                                    child: LoginScreenFake(),
+                                    child: LoginScreen(),
                                     type: PageTransitionType.fade,
                                   ),
                                 ),
@@ -239,8 +239,8 @@ class ReviewSubmissionWidget extends StatelessWidget {
                 Expanded(
                     child: Center(
                   child: Text(
-                    (BlocProvider.of<AuthBlocFake>(context).state
-                            as SignedInAuthStateFake)
+                    (BlocProvider.of<LoginBloc>(context).state
+                            as LoggedInLoginState)
                         .username,
                     style: boldGreenText.copyWith(fontSize: 18),
                   ),
@@ -260,13 +260,14 @@ class ReviewSubmissionWidget extends StatelessWidget {
                         style: darkGreyText.copyWith(fontSize: 18),
                       ),
                       onPressed: () {
-                        if ((BlocProvider.of<AuthBlocFake>(context).state
-                                as SignedInAuthStateFake)
+                        //TODO Remove repetition
+                        if ((BlocProvider.of<LoginBloc>(context).state
+                                as LoggedInLoginState)
                             .username
                             .isNotEmpty) {
                           onReviewed(
-                              (BlocProvider.of<AuthBlocFake>(context).state
-                                      as SignedInAuthStateFake)
+                              (BlocProvider.of<LoginBloc>(context).state
+                                      as LoggedInLoginState)
                                   .username,
                               reviewController.text);
                           FocusScope.of(context).requestFocus(FocusNode());

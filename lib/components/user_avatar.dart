@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mygameslist_flutter/blocs/auth_bloc_fake.dart';
+import 'package:mygameslist_flutter/blocs/login_bloc.dart';
 import 'package:mygameslist_flutter/styles.dart';
-import 'package:mygameslist_flutter/views/login_screen_fake.dart';
+import 'package:mygameslist_flutter/views/login_screen.dart';
 import 'package:page_transition/page_transition.dart';
 
 class UserAvatar extends StatelessWidget {
@@ -14,13 +14,12 @@ class UserAvatar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: BlocBuilder<AuthBlocFake, AuthStateFake>(
+      child: BlocBuilder<LoginBloc, LoginState>(
         builder: (context, state) {
-          if (state is SignedInAuthStateFake) {
+          if (state is LoggedInLoginState) {
             return GestureDetector(
               onTap: () {
-                BlocProvider.of<AuthBlocFake>(context)
-                    .add(SignOutAuthEventFake());
+                BlocProvider.of<LoginBloc>(context).add(LogoutLoginEvent());
               },
               child: CircleAvatar(
                 backgroundColor: Colors.lightGreenAccent,
@@ -37,7 +36,7 @@ class UserAvatar extends StatelessWidget {
                   context,
                   PageTransition(
                     type: PageTransitionType.fade,
-                    child: LoginScreenFake(),
+                    child: LoginScreen(),
                   ),
                 );
               },
