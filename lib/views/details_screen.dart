@@ -17,6 +17,7 @@ import 'package:mygameslist_flutter/models/game_model.dart';
 import 'package:mygameslist_flutter/views/home_screen.dart';
 import 'package:mygameslist_flutter/views/login_screen.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:sticky_headers/sticky_headers/widget.dart';
 
 class DetailsScreen extends StatefulWidget {
   final CachedNetworkImageProvider tempImage;
@@ -127,14 +128,10 @@ class _DetailsScreenState extends State<DetailsScreen> {
                       style: boldGreenText,
                     ),
                     //-----------------------REVIEWS
-                    ListView.builder(
-                      shrinkWrap: true,
-                      primary: false,
-                      itemCount: reviews.length,
-                      itemBuilder: (BuildContext context, int pos) {
-                        return ReviewWidget(review: reviews[pos]);
-                      },
-                    ),
+                    for (var review in reviews)
+                      ReviewWidget(
+                        review: review,
+                      ), //-------------Minimum dart version 2.5
                     //-----------------------BOTTOM AREA
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 10),
