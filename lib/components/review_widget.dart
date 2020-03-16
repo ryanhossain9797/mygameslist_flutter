@@ -6,6 +6,7 @@ import 'package:mygameslist_flutter/colors.dart';
 import 'package:mygameslist_flutter/constants.dart';
 import 'package:mygameslist_flutter/models/review_model.dart';
 import 'package:mygameslist_flutter/styles.dart';
+import 'package:sticky_headers/sticky_headers.dart';
 
 class ReviewWidget extends StatefulWidget {
   const ReviewWidget({
@@ -28,7 +29,6 @@ class _ReviewWidgetState extends State<ReviewWidget>
     Key displayKey = UniqueKey();
     return Container(
       margin: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-      padding: EdgeInsets.all(10),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.only(
             topLeft: Radius.circular(5),
@@ -47,105 +47,124 @@ class _ReviewWidgetState extends State<ReviewWidget>
             builder: (context) {
               return deleting
                   //-----------------------DELETION WIDGET
-                  ? Container(
-                      height: 100,
-                      child: Column(
-                        children: <Widget>[
-                          Text(
-                            "Delete your review?",
-                            style: boldGreenText.copyWith(fontSize: 24),
-                          ),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          Expanded(
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(10),
-                              child: Row(
-                                children: <Widget>[
-                                  Expanded(
-                                    child: DecoratedBox(
-                                      decoration: BoxDecoration(
-                                          color: lightAccentColor),
-                                      child: InkWell(
-                                        onTap: () {
-                                          setState(() {
-                                            deleting = false;
-                                          });
-                                        },
-                                        child: Center(
-                                          child: Text(
-                                            "Cancel",
-                                            style: darkGreyText.copyWith(
-                                                fontSize: 20),
+                  ? Padding(
+                      padding: const EdgeInsets.all(15),
+                      child: Container(
+                        height: 100,
+                        child: Column(
+                          children: <Widget>[
+                            Text(
+                              "Delete your review?",
+                              style: boldGreenText.copyWith(fontSize: 24),
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            Expanded(
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(10),
+                                child: Row(
+                                  children: <Widget>[
+                                    Expanded(
+                                      child: DecoratedBox(
+                                        decoration: BoxDecoration(
+                                            color: lightAccentColor),
+                                        child: InkWell(
+                                          onTap: () {
+                                            setState(() {
+                                              deleting = false;
+                                            });
+                                          },
+                                          child: Center(
+                                            child: Text(
+                                              "Cancel",
+                                              style: darkGreyText.copyWith(
+                                                  fontSize: 20),
+                                            ),
                                           ),
                                         ),
                                       ),
                                     ),
-                                  ),
-                                  Expanded(
-                                    child: DecoratedBox(
-                                      decoration: BoxDecoration(
-                                          color: dangerWarningColor),
-                                      child: InkWell(
-                                        onTap: () {
-                                          BlocProvider.of<DetailsBloc>(context)
-                                              .add(
-                                            DeleteReviewDetailsEvent(
-                                                review: widget.review),
-                                          );
-                                          setState(() {
-                                            deleting = false;
-                                          });
-                                        },
-                                        child: Center(
-                                          child: Text(
-                                            "Delete",
-                                            style: darkGreyText.copyWith(
-                                                fontSize: 20),
+                                    Expanded(
+                                      child: DecoratedBox(
+                                        decoration: BoxDecoration(
+                                            color: dangerWarningColor),
+                                        child: InkWell(
+                                          onTap: () {
+                                            BlocProvider.of<DetailsBloc>(
+                                                    context)
+                                                .add(
+                                              DeleteReviewDetailsEvent(
+                                                  review: widget.review),
+                                            );
+                                            setState(() {
+                                              deleting = false;
+                                            });
+                                          },
+                                          child: Center(
+                                            child: Text(
+                                              "Delete",
+                                              style: darkGreyText.copyWith(
+                                                  fontSize: 20),
+                                            ),
                                           ),
                                         ),
                                       ),
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     )
                   //---------------------------MAIN BODY
-                  : Padding(
-                      padding: const EdgeInsets.all(5),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Row(
-                            children: <Widget>[
-                              //-----------------------First letter as avatar
-                              CircleAvatar(
-                                backgroundColor: lightAccentColor,
-                                child: Text(
-                                  widget.review.username.substring(0, 1),
-                                  style: darkGreyText.copyWith(fontSize: 24),
+                  : StickyHeaderBuilder(
+                      builder: (context, stuckAmount) {
+                        return Padding(
+                          padding: EdgeInsets.all(15),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              DecoratedBox(
+                                decoration: BoxDecoration(boxShadow: [
+                                  BoxShadow(
+                                      blurRadius: 30,
+                                      spreadRadius: 5,
+                                      color: darkGreyColor.withAlpha(
+                                          ((1 - stuckAmount) * 127).toInt()))
+                                ]),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    CircleAvatar(
+                                      //-----------------------First letter as avatar
+                                      backgroundColor: lightAccentColor,
+                                      child: Text(
+                                        widget.review.username.substring(0, 1),
+                                        style:
+                                            darkGreyText.copyWith(fontSize: 24),
+                                      ),
+                                    ),
+                                    //-----------------------Rest of username
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 3),
+                                      child: Text(
+                                        widget.review.username.substring(
+                                            1, widget.review.username.length),
+                                        style: boldGreenText.copyWith(
+                                            fontSize: 22),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: 10,
+                                    ),
+                                  ],
                                 ),
                               ),
-                              //-----------------------Rest of username
-                              Expanded(
-                                child: Padding(
-                                  padding:
-                                      const EdgeInsets.symmetric(horizontal: 3),
-                                  child: Text(
-                                    widget.review.username.substring(
-                                        1, widget.review.username.length),
-                                    style: boldGreenText.copyWith(fontSize: 22),
-                                  ),
-                                ),
-                              ),
-                              SizedBox(
-                                width: 10,
-                              ),
+
                               //-------------------------------------Renders CROSS button if signed in and username matches review user
                               BlocBuilder<LoginBloc, LoginState>(
                                 builder: (context, state) {
@@ -181,38 +200,46 @@ class _ReviewWidgetState extends State<ReviewWidget>
                               )
                             ],
                           ),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          Row(
-                            children: <Widget>[
-                              CircleAvatar(
-                                radius: 25,
-                                child: Icon(
-                                  Icons.thumb_up,
-                                  size: 30,
+                        );
+                      },
+                      content: Padding(
+                        padding: EdgeInsets.all(15),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            SizedBox(
+                              height: 10,
+                            ),
+                            Row(
+                              children: <Widget>[
+                                CircleAvatar(
+                                  radius: 25,
+                                  child: Icon(
+                                    Icons.thumb_up,
+                                    size: 30,
+                                  ),
+                                  backgroundColor: Colors.transparent,
                                 ),
-                                backgroundColor: Colors.transparent,
-                              ),
-                              CircleAvatar(
-                                radius: 25,
-                                child: Icon(
-                                  Icons.thumb_down,
-                                  size: 30,
+                                CircleAvatar(
+                                  radius: 25,
+                                  child: Icon(
+                                    Icons.thumb_down,
+                                    size: 30,
+                                  ),
+                                  backgroundColor: Colors.transparent,
                                 ),
-                                backgroundColor: Colors.transparent,
-                              ),
-                            ],
-                          ),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          Text(
-                            widget.review.review,
-                            style: darkGreyText.copyWith(
-                                color: Colors.white, fontSize: 12),
-                          ),
-                        ],
+                              ],
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            Text(
+                              widget.review.review,
+                              style: darkGreyText.copyWith(
+                                  color: Colors.white, fontSize: 12),
+                            ),
+                          ],
+                        ),
                       ),
                     );
             },

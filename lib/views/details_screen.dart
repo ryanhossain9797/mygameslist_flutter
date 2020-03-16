@@ -44,38 +44,45 @@ class _DetailsScreenState extends State<DetailsScreen> {
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
           return [
             //-------------------------APPBAR
-            SliverAppBar(
-              pinned: true,
-              expandedHeight: 180,
-              flexibleSpace: FlexibleSpaceBar(
-                background: Hero(
-                  tag: widget.id,
-                  child: Stack(
-                    fit: StackFit.expand,
-                    children: [
-                      Image(
-                        fit: BoxFit.cover,
-                        image: widget.tempImage,
-                      ),
-                      Container(
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            begin: FractionalOffset.topCenter,
-                            end: FractionalOffset.bottomCenter,
-                            colors: [
-                              Colors.lightGreenAccent.withAlpha(127),
-                              Colors.transparent
-                            ],
+            SliverOverlapAbsorber(
+              handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+              child: SliverSafeArea(
+                top: false,
+                sliver: SliverAppBar(
+                  floating: true,
+                  pinned: true,
+                  expandedHeight: 180,
+                  flexibleSpace: FlexibleSpaceBar(
+                    background: Hero(
+                      tag: widget.id,
+                      child: Stack(
+                        fit: StackFit.expand,
+                        children: [
+                          Image(
+                            fit: BoxFit.cover,
+                            image: widget.tempImage,
                           ),
-                        ),
-                      )
-                    ],
+                          Container(
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                begin: FractionalOffset.topCenter,
+                                end: FractionalOffset.bottomCenter,
+                                colors: [
+                                  Colors.lightGreenAccent.withAlpha(127),
+                                  Colors.transparent
+                                ],
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
                   ),
+                  actions: <Widget>[
+                    UserAvatar(),
+                  ],
                 ),
               ),
-              actions: <Widget>[
-                UserAvatar(),
-              ],
             ),
           ];
         },
