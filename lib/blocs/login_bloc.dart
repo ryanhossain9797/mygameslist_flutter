@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mygameslist_flutter/api/api.dart';
 import 'package:mygameslist_flutter/models/login_result_model.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 //--------------------Events
 class LoginEvent {}
@@ -18,7 +19,8 @@ class LoginState {}
 
 class LoggedInLoginState extends LoginState {
   final String username;
-  LoggedInLoginState(this.username);
+  final String email;
+  LoggedInLoginState({this.username, this.email});
 }
 
 class LoggedOutLoginState extends LoginState {
@@ -40,12 +42,18 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         password: event.password,
       );
       if (result.success) {
-        //TODO save result.token
-        yield LoggedInLoginState(result.message);
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        prefs.setString("token", result.token);
+        yield LoggedInLoginState(
+          username: result.username,
+          email: result.email,
+        );
       } else {
         yield LoggedOutLoginState("failed");
       }
     } else if (event is LogoutLoginEvent) {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      prefs.remove("token");
       yield LoggedOutLoginState("Enter email and password");
     }
   }

@@ -2,6 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mygameslist_flutter/api/api.dart';
 import 'package:mygameslist_flutter/models/review_model.dart';
 import 'package:mygameslist_flutter/models/game_model.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class DetailsEvent {}
 
@@ -61,7 +62,9 @@ class DetailsBloc extends Bloc<DetailsEvent, DetailsLoadState> {
     } else if (event is SubmitReviewDetailsEvent) {
       //yield DetailsLoadingState();
       try {
-        await ApiHelper.postReview(event.review);
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        String token = prefs.getString("token");
+        await ApiHelper.postReview(token, event.review);
         GameModel game = await ApiHelper.getGameById(event.review.articleId);
         List<ReviewModel> reviews = await ApiHelper.getAllReviews(game.id);
         yield DetailsLoadedState(game, reviews);
@@ -71,7 +74,9 @@ class DetailsBloc extends Bloc<DetailsEvent, DetailsLoadState> {
     } else if (event is DeleteReviewDetailsEvent) {
       //yield DetailsLoadingState();
       try {
-        await ApiHelper.deleteReviewById(
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        String token = prefs.getString("token");
+        await ApiHelper.deleteReviewById(token,
             aid: event.review.articleId,
             cid: event.review.id,
             username: event.review.username);

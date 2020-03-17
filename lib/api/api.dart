@@ -74,21 +74,20 @@ class ApiHelper {
     return reviews;
   }
 
-  static postReview(ReviewModel review) async {
+  static postReview(String token, ReviewModel review) async {
+    print("POSTREVIEW: token: $token");
     Response response = await post(
         Uri.encodeFull(
             "http://118.179.70.140:3693/articles/${review.articleId}/comments"),
-        body: {
-          "article": review.articleId,
-          "username": review.username,
-          "comment": review.review
-        });
+        body: {"comment": review.review},
+        headers: {"token": token});
     var jsonResponse = jsonDecode(response.body);
 
     return ReviewModel.fromJson(json: jsonResponse);
   }
 
-  static deleteReviewById({
+  static deleteReviewById(
+    @required String token, {
     @required String aid,
     @required String cid,
     @required String username,
@@ -96,7 +95,7 @@ class ApiHelper {
     print("API_DELETE_REVIEW: username is $username");
     Response response = await delete(
       Uri.encodeFull("http://118.179.70.140:3693/articles/$aid/comments/$cid"),
-      headers: {"username": username},
+      headers: {"token": token},
     );
 
     var jsonResponse = jsonDecode(response.body);
@@ -138,8 +137,14 @@ class ApiHelper {
       var jsonResponse = jsonDecode(response.body);
       String token = jsonResponse["token"];
       String userName = jsonResponse["username"];
+      String email = jsonResponse["email"];
       print(token);
-      return LogInResult(success: true, message: userName, token: token);
+      return LogInResult(
+          success: true,
+          username: userName,
+          email: email,
+          message: "success",
+          token: token);
     } else {
       print(response.statusCode);
       return LogInResult(success: false, message: "failed", token: "");

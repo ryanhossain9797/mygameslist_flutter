@@ -169,8 +169,7 @@ class _ReviewWidgetState extends State<ReviewWidget>
                               BlocBuilder<LoginBloc, LoginState>(
                                 builder: (context, state) {
                                   if (state is LoggedInLoginState) {
-                                    if (state.username ==
-                                        widget.review.username) {
+                                    if (state.email == widget.review.email) {
                                       return CircleAvatar(
                                         backgroundColor: dangerWarningColor,
                                         child: IconButton(

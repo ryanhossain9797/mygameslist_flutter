@@ -145,10 +145,10 @@ class _DetailsScreenState extends State<DetailsScreen> {
                       child: BlocBuilder<LoginBloc, LoginState>(
                         builder: (context, state) {
                           if (state is LoggedInLoginState) {
-                            String name = state.username;
+                            String email = state.email;
                             bool reviewed = false;
                             for (ReviewModel review in reviews) {
-                              if (review.username == name) {
+                              if (review.email == email) {
                                 reviewed = true;
                                 break;
                               }
