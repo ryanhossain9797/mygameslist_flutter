@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:mygameslist_flutter/styles.dart';
 
-class AuthInputField extends StatelessWidget {
-  const AuthInputField(
+class InputField extends StatelessWidget {
+  const InputField(
       {Key key,
       @required TextEditingController controller,
       @required this.hintText,
@@ -17,12 +17,15 @@ class AuthInputField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(10),
+      padding: const EdgeInsets.symmetric(vertical: 10),
       child: TextField(
+        style: TextStyle(fontFamily: "Poppins"),
         obscureText: obscureText,
         controller: _emailController,
-        decoration:
-            InputDecoration(border: lightGreenBorder, hintText: hintText),
+        decoration: InputDecoration(
+            border: lightGreenBorder,
+            hintText: hintText,
+            hintStyle: TextStyle(fontFamily: "Poppins")),
       ),
     );
   }

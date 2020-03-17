@@ -30,6 +30,14 @@ class _ReviewWidgetState extends State<ReviewWidget>
     return Container(
       margin: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
       decoration: BoxDecoration(
+        boxShadow: [
+          BoxShadow(
+            offset: Offset(0, 3),
+            blurRadius: 5,
+            spreadRadius: 3,
+            color: Colors.black.withAlpha(127),
+          )
+        ],
         borderRadius: BorderRadius.only(
             topLeft: Radius.circular(5),
             topRight: Radius.circular(30),
@@ -128,13 +136,17 @@ class _ReviewWidgetState extends State<ReviewWidget>
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               DecoratedBox(
-                                decoration: BoxDecoration(boxShadow: [
-                                  BoxShadow(
-                                      blurRadius: 30,
-                                      spreadRadius: 5,
-                                      color: darkGreyColor.withAlpha(
-                                          ((1 - stuckAmount) * 127).toInt()))
-                                ]),
+                                decoration: BoxDecoration(
+                                  color: darkGreyColor,
+                                  border: Border.all(
+                                      color: Color.lerp(
+                                        lightAccentColor,
+                                        null,
+                                        stuckAmount,
+                                      ),
+                                      width: 2),
+                                  borderRadius: BorderRadius.circular(30),
+                                ),
                                 child: Row(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [

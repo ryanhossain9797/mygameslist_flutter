@@ -7,6 +7,7 @@ import 'package:getflutter/types/gf_loader_type.dart';
 import 'package:mygameslist_flutter/blocs/details_bloc.dart';
 import 'package:mygameslist_flutter/blocs/login_bloc.dart';
 import 'package:mygameslist_flutter/colors.dart';
+import 'package:mygameslist_flutter/components/input_field.dart';
 import 'package:mygameslist_flutter/components/loading_indicator.dart';
 import 'package:mygameslist_flutter/components/review_widget.dart';
 import 'package:mygameslist_flutter/components/side_drawer.dart';
@@ -284,14 +285,9 @@ class ReviewSubmissionWidget extends StatelessWidget {
               ],
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.symmetric(
-              vertical: 5,
-            ),
-            child: InputBox(
-              hint: "review",
-              controller: reviewController,
-            ),
+          InputBox(
+            hint: "review",
+            controller: reviewController,
           ),
         ],
       ),
@@ -311,20 +307,9 @@ class InputBox extends StatelessWidget {
       data: Theme.of(context).copyWith(
         cursorColor: Colors.lightGreenAccent,
       ),
-      child: TextField(
-        //-------------------------TODO: Implement scroll
-        onTap: () {},
+      child: InputField(
         controller: controller != null ? controller : TextEditingController(),
-        decoration: InputDecoration(
-          hintText: hint,
-          contentPadding: EdgeInsets.symmetric(
-            vertical: 0,
-            horizontal: 10,
-          ),
-          enabledBorder: greyBorder,
-          focusedBorder: lightGreenBorder,
-          border: greenBorder,
-        ),
+        hintText: hint,
       ),
     );
   }

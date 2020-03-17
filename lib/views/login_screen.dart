@@ -6,7 +6,7 @@ import 'package:mygameslist_flutter/blocs/login_bloc.dart';
 import 'package:mygameslist_flutter/blocs/signup_bloc.dart';
 import 'package:mygameslist_flutter/blocs/signup_bloc.dart';
 import 'package:mygameslist_flutter/colors.dart';
-import 'package:mygameslist_flutter/components/auth_input_field.dart';
+import 'package:mygameslist_flutter/components/input_field.dart';
 import 'package:mygameslist_flutter/styles.dart';
 import 'package:mygameslist_flutter/views/home_screen.dart';
 import 'package:page_transition/page_transition.dart';
@@ -60,110 +60,128 @@ class _LoginScreenState extends State<LoginScreen> {
           centerTitle: true,
           title: Text(
             loginScreen ? "Login Screen" : "Signup Screen",
-            style: boldGreenText.copyWith(fontSize: 24, color: Colors.white),
+            style: appBarText,
           ),
         ),
         body: Center(
           child: SingleChildScrollView(
             child: AnimatedSwitcher(
               duration: Duration(milliseconds: 200),
-              child: Builder(
+              child: Padding(
                 key: loginScreen ? loginKey : signupKey,
-                builder: (context) {
-                  return loginScreen
-                      ? Column(
-                          children: [
-                            BlocBuilder<LoginBloc, LoginState>(
-                              builder: (context, state) {
-                                if (state is LoggedInLoginState) {
-                                  return Text(state.username);
-                                } else if (state is LoggedOutLoginState) {
-                                  return Text(state.message);
-                                }
-                              },
-                            ),
-                            AuthInputField(
-                                controller: _loginEmailController,
-                                hintText: "email"),
-                            AuthInputField(
-                                obscureText: true,
-                                controller: _loginPasswordController,
-                                hintText: "password"),
-                            GFButton(
-                              color: lightAccentColor,
-                              textColor: darkGreyColor,
-                              child: Text("Submit"),
-                              onPressed: () {
-                                tryLogin(
-                                  email: _loginEmailController.text,
-                                  password: _loginPasswordController.text,
-                                );
-                                _loginEmailController.clear();
-                                _loginPasswordController.clear();
-                              },
-                            ),
-                            RawMaterialButton(
-                              child: Text(
-                                "New here? Sign Up",
-                                style: boldGreenText.copyWith(fontSize: 18),
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                child: Builder(
+                  builder: (context) {
+                    return loginScreen
+                        ? Column(
+                            children: [
+                              BlocBuilder<LoginBloc, LoginState>(
+                                builder: (context, state) {
+                                  if (state is LoggedInLoginState) {
+                                    return Text(
+                                      state.username,
+                                      style:
+                                          boldGreenText.copyWith(fontSize: 20),
+                                    );
+                                  } else if (state is LoggedOutLoginState) {
+                                    return Text(
+                                      state.message,
+                                      style:
+                                          boldGreenText.copyWith(fontSize: 20),
+                                    );
+                                  }
+                                  return Text(
+                                    "meh",
+                                    style: boldGreenText.copyWith(fontSize: 20),
+                                  );
+                                },
                               ),
-                              onPressed: () {
-                                setState(() {
-                                  loginScreen = false;
-                                });
-                              },
-                            ),
-                          ],
-                        )
-                      //----------------------------------Signup Screen
-                      : Column(
-                          children: <Widget>[
-                            BlocBuilder<SignupBloc, SignupState>(
-                              builder: (context, state) {
-                                return Text(state is SignupSuccessfulSignupState
-                                    ? state.username
-                                    : "Sign Up");
-                              },
-                            ),
-                            AuthInputField(
-                                controller: _signupEmailController,
-                                hintText: "email"),
-                            AuthInputField(
-                                controller: _signupUsernameController,
-                                hintText: "username"),
-                            AuthInputField(
-                                obscureText: true,
-                                controller: _signupPasswordController,
-                                hintText: "password"),
-                            GFButton(
-                              color: lightAccentColor,
-                              textColor: darkGreyColor,
-                              child: Text("Submit"),
-                              onPressed: () {
-                                trySignup(
-                                  email: _signupEmailController.text,
-                                  username: _signupUsernameController.text,
-                                  password: _signupPasswordController.text,
-                                );
-                                _signupEmailController.clear();
-                                _signupPasswordController.clear();
-                                _signupUsernameController.clear();
-                              },
-                            ),
-                            RawMaterialButton(
-                              child: Text(
-                                "Already have an account? Log In",
-                                style: boldGreenText.copyWith(fontSize: 18),
+                              InputField(
+                                  controller: _loginEmailController,
+                                  hintText: "email"),
+                              InputField(
+                                  obscureText: true,
+                                  controller: _loginPasswordController,
+                                  hintText: "password"),
+                              GFButton(
+                                color: lightAccentColor,
+                                textColor: darkGreyColor,
+                                child: Text("Submit"),
+                                onPressed: () {
+                                  tryLogin(
+                                    email: _loginEmailController.text,
+                                    password: _loginPasswordController.text,
+                                  );
+                                  _loginEmailController.clear();
+                                  _loginPasswordController.clear();
+                                },
                               ),
-                              onPressed: () {
-                                setState(() {
-                                  loginScreen = true;
-                                });
-                              },
-                            ),
-                          ],
-                        );
-                },
+                              RawMaterialButton(
+                                child: Text(
+                                  "New here? Sign Up",
+                                  style: boldGreenText.copyWith(fontSize: 18),
+                                ),
+                                onPressed: () {
+                                  setState(() {
+                                    loginScreen = false;
+                                  });
+                                },
+                              ),
+                            ],
+                          )
+                        //----------------------------------Signup Screen
+                        : Column(
+                            children: <Widget>[
+                              BlocBuilder<SignupBloc, SignupState>(
+                                builder: (context, state) {
+                                  return Text(
+                                    state is SignupSuccessfulSignupState
+                                        ? state.username
+                                        : "Sign Up",
+                                    style: boldGreenText.copyWith(fontSize: 20),
+                                  );
+                                },
+                              ),
+                              InputField(
+                                  controller: _signupEmailController,
+                                  hintText: "email"),
+                              InputField(
+                                  controller: _signupUsernameController,
+                                  hintText: "username"),
+                              InputField(
+                                  obscureText: true,
+                                  controller: _signupPasswordController,
+                                  hintText: "password"),
+                              GFButton(
+                                color: lightAccentColor,
+                                textColor: darkGreyColor,
+                                child: Text("Submit"),
+                                onPressed: () {
+                                  trySignup(
+                                    email: _signupEmailController.text,
+                                    username: _signupUsernameController.text,
+                                    password: _signupPasswordController.text,
+                                  );
+                                  _signupEmailController.clear();
+                                  _signupPasswordController.clear();
+                                  _signupUsernameController.clear();
+                                },
+                              ),
+                              RawMaterialButton(
+                                child: Text(
+                                  "Already have an account? Log In",
+                                  style: boldGreenText.copyWith(fontSize: 18),
+                                ),
+                                onPressed: () {
+                                  setState(() {
+                                    loginScreen = true;
+                                  });
+                                },
+                              ),
+                            ],
+                          );
+                  },
+                ),
               ),
             ),
           ),

@@ -10,6 +10,7 @@ import 'package:mygameslist_flutter/components/loading_indicator.dart';
 import 'package:mygameslist_flutter/components/side_drawer.dart';
 import 'package:mygameslist_flutter/components/user_avatar.dart';
 import 'package:mygameslist_flutter/models/game_model.dart';
+import 'package:mygameslist_flutter/styles.dart';
 import 'package:mygameslist_flutter/views/details_screen.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:animations/animations.dart';
@@ -41,39 +42,44 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
           return [
             //-------------------------------------------------AppBar
-            SliverAppBar(
-              centerTitle: true,
-              title: Text(
-                "MyGamesList",
-                style: TextStyle(
-                    fontFamily: 'Poppins', fontWeight: FontWeight.bold),
-              ),
-              automaticallyImplyLeading: true,
-              actions: <Widget>[
-                //-------------------------------------------User Avatar
-                UserAvatar(),
-              ],
-              pinned: true,
+            SliverOverlapAbsorber(
+              handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+              child: SliverSafeArea(
+                top: false,
+                sliver: SliverAppBar(
+                  centerTitle: true,
+                  title: Text(
+                    "MyGamesList",
+                    style: appBarText,
+                  ),
+                  automaticallyImplyLeading: true,
+                  actions: <Widget>[
+                    //-------------------------------------------User Avatar
+                    UserAvatar(),
+                  ],
+                  pinned: true,
 
-              //----------------------------------------------AppBar Background Image
-              flexibleSpace: FlexibleSpaceBar(
-                background: Image.asset(
-                  'images/header.jpg',
-                  fit: BoxFit.cover,
-                  colorBlendMode: BlendMode.darken,
-                  color: Color(0x66000000),
+                  //----------------------------------------------AppBar Background Image
+                  flexibleSpace: FlexibleSpaceBar(
+                    background: Image.asset(
+                      'images/header.jpg',
+                      fit: BoxFit.cover,
+                      colorBlendMode: BlendMode.darken,
+                      color: Color(0x66000000),
+                    ),
+                  ),
+                  expandedHeight: 180,
+
+                  //----------------------------------------------Tab Buttons
+                  bottom: TabBar(
+                    indicatorColor: Colors.lightGreenAccent,
+                    controller: _tabController,
+                    tabs: <Widget>[
+                      Tab(child: Icon(Icons.list)),
+                      Tab(child: Icon(Icons.favorite)),
+                    ],
+                  ),
                 ),
-              ),
-              expandedHeight: 180,
-
-              //----------------------------------------------Tab Buttons
-              bottom: TabBar(
-                indicatorColor: Colors.lightGreenAccent,
-                controller: _tabController,
-                tabs: <Widget>[
-                  Tab(child: Icon(Icons.list)),
-                  Tab(child: Icon(Icons.favorite)),
-                ],
               ),
             ),
           ];

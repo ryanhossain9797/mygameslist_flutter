@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mygameslist_flutter/blocs/login_bloc.dart';
 import 'package:mygameslist_flutter/styles.dart';
 import 'package:mygameslist_flutter/views/login_screen.dart';
+import 'package:mygameslist_flutter/views/user_screen.dart';
 import 'package:page_transition/page_transition.dart';
 
 class UserAvatar extends StatelessWidget {
@@ -19,7 +20,13 @@ class UserAvatar extends StatelessWidget {
           if (state is LoggedInLoginState) {
             return GestureDetector(
               onTap: () {
-                BlocProvider.of<LoginBloc>(context).add(LogoutLoginEvent());
+                Navigator.push(
+                  context,
+                  PageTransition(
+                    child: UserScreen(),
+                    type: PageTransitionType.fade,
+                  ),
+                );
               },
               child: CircleAvatar(
                 backgroundColor: Colors.lightGreenAccent,

@@ -4,6 +4,11 @@ import 'package:mygameslist_flutter/constants.dart';
 
 final primaryCircleBorderRadius = BorderRadius.circular(kPrimaryRadiusValue);
 
+var appBarText = TextStyle(
+  fontFamily: 'Poppins',
+  fontWeight: FontWeight.bold,
+);
+
 var boldGreenText = TextStyle(
   fontSize: 30,
   fontFamily: 'Poppins',
