@@ -202,7 +202,8 @@ class _ReviewWidgetState extends State<ReviewWidget>
                         );
                       },
                       content: Padding(
-                        padding: EdgeInsets.all(15),
+                        padding:
+                            EdgeInsets.only(bottom: 15, left: 15, right: 15),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[

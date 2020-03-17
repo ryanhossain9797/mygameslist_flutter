@@ -74,20 +74,24 @@ class ApiHelper {
     return reviews;
   }
 
-  static postReview(String token, ReviewModel review) async {
+  static postReview(
+    String token,
+    ReviewModel review,
+  ) async {
     print("POSTREVIEW: token: $token");
     Response response = await post(
-        Uri.encodeFull(
-            "http://118.179.70.140:3693/articles/${review.articleId}/comments"),
-        body: {"comment": review.review},
-        headers: {"token": token});
+      Uri.encodeFull(
+          "http://118.179.70.140:3693/articles/${review.articleId}/comments"),
+      body: {"comment": review.review},
+      headers: {"token": token},
+    );
     var jsonResponse = jsonDecode(response.body);
 
     return ReviewModel.fromJson(json: jsonResponse);
   }
 
   static deleteReviewById(
-    @required String token, {
+    String token, {
     @required String aid,
     @required String cid,
     @required String username,
