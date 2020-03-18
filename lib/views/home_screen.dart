@@ -125,21 +125,27 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                       itemCount: _articles.length,
                       itemBuilder: (BuildContext context, int index) {
                         //-------------------------------------------All Game Articles
-                        return GameWidget(
-                          game: _articles[index],
-                          onTap: (image) {
-                            //--------------------TODO {LoadDetailEvent here instead?}
-                            Navigator.push(
-                              context,
-                              PageTransition(
-                                type: PageTransitionType.fade,
-                                child: DetailsScreen(
-                                  tempImage: image,
-                                  id: _articles[index].id,
+                        return Padding(
+                          padding: EdgeInsets.symmetric(
+                            vertical: 5,
+                            horizontal: 10,
+                          ),
+                          child: GameWidget(
+                            game: _articles[index],
+                            onTap: (image) {
+                              //--------------------TODO {LoadDetailEvent here instead?}
+                              Navigator.push(
+                                context,
+                                PageTransition(
+                                  type: PageTransitionType.fade,
+                                  child: DetailsScreen(
+                                    tempImage: image,
+                                    id: _articles[index].id,
+                                  ),
                                 ),
-                              ),
-                            );
-                          },
+                              );
+                            },
+                          ),
                         );
                       },
                     ),
@@ -150,7 +156,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                     child: Center(
                       child: Text("TAB 2"),
                     ),
-                  )
+                  ),
                 ],
               );
             }

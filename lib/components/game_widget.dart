@@ -3,6 +3,8 @@ import 'dart:ui';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:mygameslist_flutter/colors.dart';
+import 'package:mygameslist_flutter/constants.dart';
 import 'package:mygameslist_flutter/models/game_model.dart';
 import 'package:mygameslist_flutter/styles.dart';
 
@@ -22,17 +24,27 @@ class GameWidget extends StatelessWidget {
         onTap(image);
       },
       child: Container(
-        padding: EdgeInsets.all(10),
         decoration: BoxDecoration(
-            color: Colors.grey[800], borderRadius: primaryCircleBorderRadius),
-        margin: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+          borderRadius: primaryCircleBorderRadius,
+          color: darkGreyColor,
+          boxShadow: [
+            BoxShadow(
+              blurRadius: 3,
+              spreadRadius: 3,
+              color: Colors.black.withAlpha(63),
+            ),
+          ],
+        ),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             Hero(
               tag: game.id,
               child: ClipRRect(
-                borderRadius: primaryCircleBorderRadius,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(kPrimaryRadiusValue),
+                  topRight: Radius.circular(kPrimaryRadiusValue),
+                ),
                 child: Image(
                   image: image,
                   fit: BoxFit.cover,
@@ -40,7 +52,7 @@ class GameWidget extends StatelessWidget {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.all(5),
+              padding: const EdgeInsets.all(15),
               child: Text(
                 game.title,
                 style: TextStyle(

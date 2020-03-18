@@ -32,11 +32,10 @@ class _ReviewWidgetState extends State<ReviewWidget>
       decoration: BoxDecoration(
         boxShadow: [
           BoxShadow(
-            offset: Offset(0, 3),
-            blurRadius: 5,
+            blurRadius: 3,
             spreadRadius: 3,
-            color: Colors.black.withAlpha(127),
-          )
+            color: Colors.black.withAlpha(63),
+          ),
         ],
         borderRadius: BorderRadius.only(
             topLeft: Radius.circular(5),
