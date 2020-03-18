@@ -9,6 +9,7 @@ import 'package:mygameslist_flutter/blocs/login_bloc.dart';
 import 'package:mygameslist_flutter/colors.dart';
 import 'package:mygameslist_flutter/components/input_field.dart';
 import 'package:mygameslist_flutter/components/loading_indicator.dart';
+import 'package:mygameslist_flutter/components/perspective_drawer.dart';
 import 'package:mygameslist_flutter/components/review_widget.dart';
 import 'package:mygameslist_flutter/components/side_drawer.dart';
 import 'package:mygameslist_flutter/components/user_avatar.dart';
@@ -28,7 +29,8 @@ class DetailsScreen extends StatefulWidget {
   _DetailsScreenState createState() => _DetailsScreenState();
 }
 
-class _DetailsScreenState extends State<DetailsScreen> {
+class _DetailsScreenState extends State<DetailsScreen>
+    with TickerProviderStateMixin {
   @override
   void initState() {
     BlocProvider.of<DetailsBloc>(context).add(

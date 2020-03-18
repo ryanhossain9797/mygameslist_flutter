@@ -7,6 +7,7 @@ import 'package:mygameslist_flutter/blocs/list_bloc.dart';
 import 'package:mygameslist_flutter/colors.dart';
 import 'package:mygameslist_flutter/components/game_widget.dart';
 import 'package:mygameslist_flutter/components/loading_indicator.dart';
+import 'package:mygameslist_flutter/components/perspective_drawer.dart';
 import 'package:mygameslist_flutter/components/side_drawer.dart';
 import 'package:mygameslist_flutter/components/user_avatar.dart';
 import 'package:mygameslist_flutter/models/game_model.dart';
@@ -14,6 +15,7 @@ import 'package:mygameslist_flutter/styles.dart';
 import 'package:mygameslist_flutter/views/details_screen.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:animations/animations.dart';
+import 'dart:math' as math;
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -27,14 +29,14 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     if (state is ListInitialState || state is ListLoadingState) {
       BlocProvider.of<ListBloc>(context).add(ListLoadEvent());
     }
+    state.close();
     super.initState();
   }
 
+  //------------------------------Experimental Animations
+
   @override
   Widget build(BuildContext context) {
-    // if (!(BlocProvider.of<ListBloc>(context).state is ListInitialState)) {
-
-    // }
     TabController _tabController = TabController(length: 2, vsync: this);
     return Scaffold(
       drawer: SideDrawer(),

@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:mygameslist_flutter/styles.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:mygameslist_flutter/views/practice_screen.dart';
 
 class SideDrawer extends StatefulWidget {
+  AnimationController controller;
+
+  SideDrawer({this.controller});
   @override
   _SideDrawerState createState() => _SideDrawerState();
 }
@@ -31,7 +35,10 @@ class _SideDrawerState extends State<SideDrawer> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                Text("Settings"),
+                Text(
+                  "Settings",
+                  style: darkGreyText,
+                ),
               ],
             ),
             decoration: BoxDecoration(color: Colors.lightGreenAccent),
@@ -47,6 +54,12 @@ class _SideDrawerState extends State<SideDrawer> {
                   },
                 )
               : Container(),
+          ListTile(
+            onTap: () {
+              widget.controller.reverse();
+            },
+            title: Text("Close Drawer"),
+          ),
           ListTile(
             onTap: () {
               Navigator.push(
