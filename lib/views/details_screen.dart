@@ -8,6 +8,7 @@ import 'package:getflutter/types/gf_loader_type.dart';
 import 'package:mygameslist_flutter/blocs/details_bloc.dart';
 import 'package:mygameslist_flutter/blocs/login_bloc.dart';
 import 'package:mygameslist_flutter/colors.dart';
+import 'package:mygameslist_flutter/components/game_widget.dart';
 import 'package:mygameslist_flutter/components/input_field.dart';
 import 'package:mygameslist_flutter/components/large_button.dart';
 import 'package:mygameslist_flutter/components/loading_indicator.dart';
@@ -22,7 +23,6 @@ import 'package:mygameslist_flutter/views/home_screen.dart';
 import 'package:mygameslist_flutter/views/login_screen.dart';
 import 'package:mygameslist_flutter/views/review_screen.dart';
 import 'package:page_transition/page_transition.dart';
-import 'package:sticky_headers/sticky_headers/widget.dart';
 
 class DetailsScreen extends StatefulWidget {
   final CachedNetworkImageProvider tempImage;
@@ -53,44 +53,39 @@ class _DetailsScreenState extends State<DetailsScreen>
             //---------------Boilerplate for preventing overlap in sliverappbar
             SliverOverlapAbsorber(
               handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
-              child: SliverSafeArea(
-                top: false,
-                //---------------Main appbar
-                sliver: SliverAppBar(
-                  floating: true,
-                  pinned: true,
-                  expandedHeight: 180,
-                  flexibleSpace: FlexibleSpaceBar(
-                    background: Hero(
-                      tag: widget.id,
-                      child: Stack(
-                        fit: StackFit.expand,
-                        children: [
-                          Image(
-                            fit: BoxFit.cover,
-                            image: widget.tempImage,
-                          ),
-                          Container(
-                            //---------------Gradient on appbar
-                            decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                begin: FractionalOffset.topCenter,
-                                end: FractionalOffset.bottomCenter,
-                                colors: [
-                                  Colors.lightGreenAccent.withAlpha(127),
-                                  Colors.transparent
-                                ],
-                              ),
+              child: SliverAppBar(
+                pinned: true,
+                expandedHeight: 180,
+                flexibleSpace: FlexibleSpaceBar(
+                  background: Hero(
+                    tag: widget.id,
+                    child: Stack(
+                      fit: StackFit.expand,
+                      children: [
+                        Image(
+                          fit: BoxFit.cover,
+                          image: widget.tempImage,
+                        ),
+                        Container(
+                          //---------------Gradient on appbar
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              begin: FractionalOffset.topCenter,
+                              end: FractionalOffset.bottomCenter,
+                              colors: [
+                                Colors.lightGreenAccent.withAlpha(127),
+                                Colors.transparent
+                              ],
                             ),
-                          )
-                        ],
-                      ),
+                          ),
+                        )
+                      ],
                     ),
                   ),
-                  actions: <Widget>[
-                    UserAvatar(), //---------------Avatar Icon on right of appbar
-                  ],
                 ),
+                actions: <Widget>[
+                  UserAvatar(), //---------------Avatar Icon on right of appbar
+                ],
               ),
             ),
           ];
@@ -109,117 +104,261 @@ class _DetailsScreenState extends State<DetailsScreen>
               );
             } else {
               //-----------------------MAIN BODY
-              GameModel article = (state as DetailsLoadedState).game;
-              List<ReviewModel> reviews = (state as DetailsLoadedState).reviews;
-              return SingleChildScrollView(
-                child: Column(
-                  children: <Widget>[
-                    //-----------------------TITLE
-                    Padding(
-                      child: Text(
-                        article.title,
-                        textAlign: TextAlign.center,
-                        style: boldGreenText,
+              GameModel _article = (state as DetailsLoadedState).game;
+              List<ReviewModel> _reviews =
+                  (state as DetailsLoadedState).reviews;
+              // return DetailsBodyWidget(article: article, reviews: reviews);
+              return Builder(
+                builder: (context) {
+                  return CustomScrollView(
+                    key: PageStorageKey("details"),
+                    slivers: <Widget>[
+                      SliverOverlapInjector(
+                        handle: NestedScrollView.sliverOverlapAbsorberHandleFor(
+                            context),
                       ),
-                      padding:
-                          EdgeInsets.symmetric(vertical: 20, horizontal: 10),
-                    ),
-                    //-----------------------DESCRIPTION
-                    Container(
-                      decoration: BoxDecoration(color: darkGreyColor),
-                      padding: EdgeInsets.all(20),
-                      child: MarkdownBody(
-                        data: article.content,
-                        styleSheet: MarkdownStyleSheet(
-                          code: TextStyle(color: darkGreyColor),
-                        ),
-                      ),
-                    ),
-                    //Padding
-                    SizedBox(
-                      height: 20,
-                    ),
-                    //-----------------------REVIEWS HEADER
-                    Text(
-                      "Reviews",
-                      style: boldGreenText,
-                    ),
-                    SizedBox(
-                      height: 15,
-                    ),
-                    //-----------------------REVIEWS
-                    for (var review in reviews)
-                      ReviewWidget(
-                        review: review,
-                      ), //-------------Minimum dart version 2.5
-                    //-----------------------BOTTOM AREA
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10),
-                      child: BlocBuilder<LoginBloc, LoginState>(
-                        builder: (context, state) {
-                          if (state is LoggedInLoginState) {
-                            String email = state.email;
-                            bool reviewed = false;
-                            for (ReviewModel review in reviews) {
-                              if (review.email == email) {
-                                reviewed = true;
-                                break;
-                              }
-                            }
-                            if (!reviewed) {
-                              //-----------------------NEW REVIEW BUTTON
-                              return Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 10.0),
-                                  child: LargeButton(
-                                    onPress: () => Navigator.push(
-                                      context,
-                                      PageTransition(
-                                        child: ReviewScreen(),
-                                        type: PageTransitionType.fade,
-                                      ),
-                                    ),
-                                    text: "Review as ${state.username}",
-                                  ));
-                            } else {
-                              return Container();
-                            }
-                          } else {
-                            //-----------------------SIGN IN PROMPT IF NOT SIGNED IN
-                            return Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(vertical: 10.0),
-                              child: LargeButton(
-                                text: "Sign In to review",
-                                onPress: () => Navigator.push(
-                                  context,
-                                  PageTransition(
-                                    child: LoginScreen(),
-                                    type: PageTransitionType.fade,
-                                  ),
+                      SliverToBoxAdapter(
+                        child: Column(
+                          children: <Widget>[
+                            //-----------------------TITLE
+                            Padding(
+                              child: Text(
+                                _article.title,
+                                textAlign: TextAlign.center,
+                                style: boldGreenText,
+                              ),
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 20, horizontal: 10),
+                            ),
+                            //-----------------------DESCRIPTION
+                            Container(
+                              decoration: BoxDecoration(color: darkGreyColor),
+                              padding: EdgeInsets.all(20),
+                              child: MarkdownBody(
+                                data: _article.content,
+                                styleSheet: MarkdownStyleSheet(
+                                  code: TextStyle(color: darkGreyColor),
                                 ),
                               ),
-                            );
-                          }
-                        },
-                      ),
-                    ),
-                    //-----------------------FOOTER
-                    Container(
-                      height: 100,
-                      child: Center(
-                        child: Text(
-                          "Total ${reviews.length} reviews",
-                          style: boldGreenText.copyWith(fontSize: 24),
+                            ),
+                            //Padding
+                            SizedBox(
+                              height: 20,
+                            ),
+                            //-----------------------REVIEWS HEADER
+                            Text(
+                              "Reviews",
+                              style: boldGreenText,
+                            ),
+                            SizedBox(
+                              height: 15,
+                            ),
+                          ],
                         ),
                       ),
-                    ),
-                  ],
-                ),
+                      SliverList(
+                        delegate: SliverChildBuilderDelegate(
+                          (context, index) {
+                            return ReviewWidget(
+                              review: _reviews[index],
+                            );
+                          },
+                          childCount: _reviews.length,
+                        ),
+                      ),
+                      SliverToBoxAdapter(
+                        child: Column(
+                          children: <Widget>[
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 10),
+                              child: BlocBuilder<LoginBloc, LoginState>(
+                                builder: (context, state) {
+                                  if (state is LoggedInLoginState) {
+                                    String email = state.email;
+                                    bool reviewed = false;
+                                    for (ReviewModel review in _reviews) {
+                                      if (review.email == email) {
+                                        reviewed = true;
+                                        break;
+                                      }
+                                    }
+                                    if (!reviewed) {
+                                      //-----------------------NEW REVIEW BUTTON
+                                      return Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 10.0),
+                                          child: LargeButton(
+                                            onPress: () => Navigator.push(
+                                              context,
+                                              PageTransition(
+                                                child: ReviewScreen(),
+                                                type: PageTransitionType.fade,
+                                              ),
+                                            ),
+                                            text: "Review as ${state.username}",
+                                          ));
+                                    } else {
+                                      return Container();
+                                    }
+                                  } else {
+                                    //-----------------------SIGN IN PROMPT IF NOT SIGNED IN
+                                    return Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 10.0),
+                                      child: LargeButton(
+                                        text: "Sign In to review",
+                                        onPress: () => Navigator.push(
+                                          context,
+                                          PageTransition(
+                                            child: LoginScreen(),
+                                            type: PageTransitionType.fade,
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                                  }
+                                },
+                              ),
+                            ),
+                            //-----------------------FOOTER
+                            Container(
+                              height: 100,
+                              child: Center(
+                                child: Text(
+                                  "Total ${_reviews.length} reviews",
+                                  style: boldGreenText.copyWith(fontSize: 24),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  );
+                },
               );
             }
           },
         ),
+      ),
+    );
+  }
+}
+
+class DetailsBodyWidget extends StatelessWidget {
+  const DetailsBodyWidget({
+    Key key,
+    @required this.article,
+    @required this.reviews,
+  }) : super(key: key);
+
+  final GameModel article;
+  final List<ReviewModel> reviews;
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      child: Column(
+        children: <Widget>[
+          //-----------------------TITLE
+          Padding(
+            child: Text(
+              article.title,
+              textAlign: TextAlign.center,
+              style: boldGreenText,
+            ),
+            padding: EdgeInsets.symmetric(vertical: 20, horizontal: 10),
+          ),
+          //-----------------------DESCRIPTION
+          Container(
+            decoration: BoxDecoration(color: darkGreyColor),
+            padding: EdgeInsets.all(20),
+            child: MarkdownBody(
+              data: article.content,
+              styleSheet: MarkdownStyleSheet(
+                code: TextStyle(color: darkGreyColor),
+              ),
+            ),
+          ),
+          //Padding
+          SizedBox(
+            height: 20,
+          ),
+          //-----------------------REVIEWS HEADER
+          Text(
+            "Reviews",
+            style: boldGreenText,
+          ),
+          SizedBox(
+            height: 15,
+          ),
+          //-----------------------REVIEWS
+          for (var review in reviews)
+            ReviewWidget(
+              review: review,
+            ), //-------------Minimum dart version 2.5
+          //-----------------------BOTTOM AREA
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            child: BlocBuilder<LoginBloc, LoginState>(
+              builder: (context, state) {
+                if (state is LoggedInLoginState) {
+                  String email = state.email;
+                  bool reviewed = false;
+                  for (ReviewModel review in reviews) {
+                    if (review.email == email) {
+                      reviewed = true;
+                      break;
+                    }
+                  }
+                  if (!reviewed) {
+                    //-----------------------NEW REVIEW BUTTON
+                    return Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 10.0),
+                        child: LargeButton(
+                          onPress: () => Navigator.push(
+                            context,
+                            PageTransition(
+                              child: ReviewScreen(),
+                              type: PageTransitionType.fade,
+                            ),
+                          ),
+                          text: "Review as ${state.username}",
+                        ));
+                  } else {
+                    return Container();
+                  }
+                } else {
+                  //-----------------------SIGN IN PROMPT IF NOT SIGNED IN
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 10.0),
+                    child: LargeButton(
+                      text: "Sign In to review",
+                      onPress: () => Navigator.push(
+                        context,
+                        PageTransition(
+                          child: LoginScreen(),
+                          type: PageTransitionType.fade,
+                        ),
+                      ),
+                    ),
+                  );
+                }
+              },
+            ),
+          ),
+          //-----------------------FOOTER
+          Container(
+            height: 100,
+            child: Center(
+              child: Text(
+                "Total ${reviews.length} reviews",
+                style: boldGreenText.copyWith(fontSize: 24),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

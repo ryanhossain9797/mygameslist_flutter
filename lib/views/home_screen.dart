@@ -28,22 +28,21 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     super.initState();
   }
 
-  //------------------------------Experimental Animations
-
   @override
   Widget build(BuildContext context) {
-    TabController _tabController = TabController(length: 2, vsync: this);
     return Scaffold(
       drawer: SideDrawer(),
-      body: NestedScrollView(
-        headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-          return [
-            //-------------------------------------------------AppBar
-            SliverOverlapAbsorber(
-              handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
-              child: SliverSafeArea(
-                top: false,
-                sliver: SliverAppBar(
+      body: DefaultTabController(
+        length: 2,
+        child: NestedScrollView(
+          headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+            return [
+              //-------------------------------------------------AppBar
+              SliverOverlapAbsorber(
+                handle:
+                    NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+                child: SliverAppBar(
+                  pinned: true,
                   centerTitle: true,
                   title: Text(
                     "MyGamesList",
@@ -54,7 +53,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                     //-------------------------------------------User Avatar
                     UserAvatar(),
                   ],
-                  pinned: true,
+
                   //----------------------------------------------AppBar Background Image
                   flexibleSpace: FlexibleSpaceBar(
                     background: Image.asset(
@@ -68,7 +67,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                   //----------------------------------------------Tab Buttons
                   bottom: TabBar(
                     indicatorColor: Colors.lightGreenAccent,
-                    controller: _tabController,
                     tabs: <Widget>[
                       Tab(child: Icon(Icons.list)),
                       Tab(child: Icon(Icons.favorite)),
@@ -76,85 +74,159 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                   ),
                 ),
               ),
-            ),
-          ];
-        },
-
-        //-----------------------------------------------------Tab Body
-        body: BlocBuilder<ListBloc, ListLoadState>(
-          builder: (context, state) {
-            if (state is ListLoadingState || state is ListInitialState) {
-              return Center(
-                child: LoadingIndicator(),
-              );
-            } else if (state is ListFailedState) {
-              //------------------------------------------------Load Error
-              return Center(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    Text("error"),
-                    Padding(
-                      padding: EdgeInsets.all(10),
-                      child: IconButton(
-                        icon: Icon(Icons.refresh),
-                        onPressed: () => BlocProvider.of<ListBloc>(context)
-                            .add(ListLoadEvent()),
-                      ),
-                    )
-                  ],
-                ),
-              );
-            } else {
-              List<GameModel> _articles = (state as ListLoadedState).games;
-              return TabBarView(
-                controller: _tabController,
-                children: [
-                  //--------------------------------------------------Tab 1
-                  MediaQuery.removePadding(
-                    context: context,
-                    removeTop: true,
-                    child: ListView.builder(
-                      itemCount: _articles.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        //-------------------------------------------All Game Articles
-                        return Padding(
-                          padding: EdgeInsets.symmetric(
-                            vertical: 5,
-                            horizontal: 10,
-                          ),
-                          child: GameWidget(
-                            game: _articles[index],
-                            onTap: (image) {
-                              //--------------------TODO {LoadDetailEvent here instead?}
-                              Navigator.push(
-                                context,
-                                PageTransition(
-                                  type: PageTransitionType.fade,
-                                  child: DetailsScreen(
-                                    tempImage: image,
-                                    id: _articles[index].id,
-                                  ),
-                                ),
-                              );
-                            },
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                  //----------------------------------------------Tab 2
-                  Container(
-                    child: Center(
-                      child: Text("TAB 2"),
-                    ),
-                  ),
-                ],
-              );
-            }
+            ];
           },
+
+          //-----------------------------------------------------Tab Body
+          body: BlocBuilder<ListBloc, ListLoadState>(
+            builder: (context, state) {
+              if (state is ListLoadingState || state is ListInitialState) {
+                return Center(
+                  child: LoadingIndicator(),
+                );
+              } else if (state is ListFailedState) {
+                //------------------------------------------------Load Error
+                return Center(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      Text("error"),
+                      Padding(
+                        padding: EdgeInsets.all(10),
+                        child: IconButton(
+                          icon: Icon(Icons.refresh),
+                          onPressed: () => BlocProvider.of<ListBloc>(context)
+                              .add(ListLoadEvent()),
+                        ),
+                      )
+                    ],
+                  ),
+                );
+              } else {
+                List<GameModel> _articles = (state as ListLoadedState).games;
+                return TabBarView(
+                  children: [
+                    //--------------------------------------------------Tab 1
+                    SafeArea(
+                      top: false,
+                      bottom: false,
+                      child: Builder(
+                        builder: (context) {
+                          // return ListViewBody(articles: _articles);
+                          return CustomScrollView(
+                            key: PageStorageKey("tab1"),
+                            slivers: <Widget>[
+                              SliverOverlapInjector(
+                                handle: NestedScrollView
+                                    .sliverOverlapAbsorberHandleFor(context),
+                              ),
+                              SliverList(
+                                delegate: SliverChildBuilderDelegate(
+                                  (context, index) {
+                                    return Padding(
+                                      padding: EdgeInsets.symmetric(
+                                        vertical: 5,
+                                        horizontal: 10,
+                                      ),
+                                      child: GameWidget(
+                                        game: _articles[index],
+                                        onTap: (image) {
+                                          //--------------------TODO {LoadDetailEvent here instead?}
+                                          Navigator.push(
+                                            context,
+                                            PageTransition(
+                                              type: PageTransitionType.fade,
+                                              child: DetailsScreen(
+                                                tempImage: image,
+                                                id: _articles[index].id,
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                    );
+                                  },
+                                  childCount: _articles.length,
+                                ),
+                              ),
+                            ],
+                          );
+                        },
+                      ),
+                    ),
+                    //----------------------------------------------Tab 2
+                    SafeArea(
+                      top: false,
+                      bottom: false,
+                      child: Builder(
+                        builder: (context) {
+                          // return ListViewBody(articles: _articles);
+                          return CustomScrollView(
+                            key: PageStorageKey("tab2"),
+                            slivers: <Widget>[
+                              SliverOverlapInjector(
+                                handle: NestedScrollView
+                                    .sliverOverlapAbsorberHandleFor(context),
+                              ),
+                              SliverFillRemaining(
+                                child: Center(
+                                  child: Text("Tab 2"),
+                                ),
+                              ),
+                            ],
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                );
+              }
+            },
+          ),
         ),
       ),
+    );
+  }
+}
+
+class ListViewBody extends StatelessWidget {
+  const ListViewBody({
+    Key key,
+    @required List<GameModel> articles,
+  })  : _articles = articles,
+        super(key: key);
+
+  final List<GameModel> _articles;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      itemCount: _articles.length,
+      itemBuilder: (BuildContext context, int index) {
+        //-------------------------------------------All Game Articles
+        return Padding(
+          padding: EdgeInsets.symmetric(
+            vertical: 5,
+            horizontal: 10,
+          ),
+          child: GameWidget(
+            game: _articles[index],
+            onTap: (image) {
+              //--------------------TODO {LoadDetailEvent here instead?}
+              Navigator.push(
+                context,
+                PageTransition(
+                  type: PageTransitionType.fade,
+                  child: DetailsScreen(
+                    tempImage: image,
+                    id: _articles[index].id,
+                  ),
+                ),
+              );
+            },
+          ),
+        );
+      },
     );
   }
 }

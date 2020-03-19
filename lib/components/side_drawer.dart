@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mygameslist_flutter/styles.dart';
+import 'package:mygameslist_flutter/views/nested_scrollview_demo.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:mygameslist_flutter/views/practice_screen.dart';
@@ -56,9 +57,15 @@ class _SideDrawerState extends State<SideDrawer> {
               : Container(),
           ListTile(
             onTap: () {
-              widget.controller.reverse();
+              Navigator.push(
+                context,
+                PageTransition(
+                  child: NestedScrollviewDemo(),
+                  type: PageTransitionType.fade,
+                ),
+              );
             },
-            title: Text("Close Drawer"),
+            title: Text("Launch Nested Demo"),
           ),
           ListTile(
             onTap: () {
