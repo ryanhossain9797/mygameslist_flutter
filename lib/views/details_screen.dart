@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:getflutter/components/button/gf_button.dart';
 import 'package:getflutter/components/loader/gf_loader.dart';
 import 'package:getflutter/types/gf_loader_type.dart';
@@ -8,6 +9,7 @@ import 'package:mygameslist_flutter/blocs/details_bloc.dart';
 import 'package:mygameslist_flutter/blocs/login_bloc.dart';
 import 'package:mygameslist_flutter/colors.dart';
 import 'package:mygameslist_flutter/components/input_field.dart';
+import 'package:mygameslist_flutter/components/large_button.dart';
 import 'package:mygameslist_flutter/components/loading_indicator.dart';
 import 'package:mygameslist_flutter/components/perspective_drawer.dart';
 import 'package:mygameslist_flutter/components/review_widget.dart';
@@ -18,6 +20,7 @@ import 'package:mygameslist_flutter/models/review_model.dart';
 import 'package:mygameslist_flutter/models/game_model.dart';
 import 'package:mygameslist_flutter/views/home_screen.dart';
 import 'package:mygameslist_flutter/views/login_screen.dart';
+import 'package:mygameslist_flutter/views/review_screen.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:sticky_headers/sticky_headers/widget.dart';
 
@@ -47,10 +50,12 @@ class _DetailsScreenState extends State<DetailsScreen>
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
           return [
             //-------------------------APPBAR
+            //---------------Boilerplate for preventing overlap in sliverappbar
             SliverOverlapAbsorber(
               handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
               child: SliverSafeArea(
                 top: false,
+                //---------------Main appbar
                 sliver: SliverAppBar(
                   floating: true,
                   pinned: true,
@@ -66,6 +71,7 @@ class _DetailsScreenState extends State<DetailsScreen>
                             image: widget.tempImage,
                           ),
                           Container(
+                            //---------------Gradient on appbar
                             decoration: BoxDecoration(
                               gradient: LinearGradient(
                                 begin: FractionalOffset.topCenter,
@@ -82,7 +88,7 @@ class _DetailsScreenState extends State<DetailsScreen>
                     ),
                   ),
                   actions: <Widget>[
-                    UserAvatar(),
+                    UserAvatar(), //---------------Avatar Icon on right of appbar
                   ],
                 ),
               ),
@@ -122,10 +128,11 @@ class _DetailsScreenState extends State<DetailsScreen>
                     Container(
                       decoration: BoxDecoration(color: darkGreyColor),
                       padding: EdgeInsets.all(20),
-                      child: Text(
-                        article.content,
-                        style: darkGreyText.copyWith(
-                            color: Colors.white, fontSize: 12),
+                      child: MarkdownBody(
+                        data: article.content,
+                        styleSheet: MarkdownStyleSheet(
+                          code: TextStyle(color: darkGreyColor),
+                        ),
                       ),
                     ),
                     //Padding
@@ -136,6 +143,9 @@ class _DetailsScreenState extends State<DetailsScreen>
                     Text(
                       "Reviews",
                       style: boldGreenText,
+                    ),
+                    SizedBox(
+                      height: 15,
                     ),
                     //-----------------------REVIEWS
                     for (var review in reviews)
@@ -157,38 +167,31 @@ class _DetailsScreenState extends State<DetailsScreen>
                               }
                             }
                             if (!reviewed) {
-                              //-----------------------NEW REVIEW WIDGET
-                              return ReviewSubmissionWidget(
-                                onReviewed: (username, review) {
-                                  BlocProvider.of<DetailsBloc>(context).add(
-                                    SubmitReviewDetailsEvent(
-                                      review: ReviewModel(
-                                        articleId: article.id,
-                                        username: username,
-                                        review: review,
+                              //-----------------------NEW REVIEW BUTTON
+                              return Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 10.0),
+                                  child: LargeButton(
+                                    onPress: () => Navigator.push(
+                                      context,
+                                      PageTransition(
+                                        child: ReviewScreen(),
+                                        type: PageTransitionType.fade,
                                       ),
                                     ),
-                                  );
-                                },
-                              );
+                                    text: "Review as ${state.username}",
+                                  ));
                             } else {
                               return Container();
                             }
                           } else {
-                            //-----------------------SIGN IN PROMPT
+                            //-----------------------SIGN IN PROMPT IF NOT SIGNED IN
                             return Padding(
                               padding:
                                   const EdgeInsets.symmetric(vertical: 10.0),
-                              child: GFButton(
-                                size: 50,
-                                color: Colors.lightGreenAccent,
-                                child: Center(
-                                  child: Text(
-                                    "Sign in to review",
-                                    style: TextStyle(color: Colors.grey[800]),
-                                  ),
-                                ),
-                                onPressed: () => Navigator.push(
+                              child: LargeButton(
+                                text: "Sign In to review",
+                                onPress: () => Navigator.push(
                                   context,
                                   PageTransition(
                                     child: LoginScreen(),
@@ -267,16 +270,10 @@ class ReviewSubmissionWidget extends StatelessWidget {
                         style: darkGreyText.copyWith(fontSize: 18),
                       ),
                       onPressed: () {
-                        //TODO Remove repetition
-                        if ((BlocProvider.of<LoginBloc>(context).state
-                                as LoggedInLoginState)
-                            .username
-                            .isNotEmpty) {
-                          onReviewed(
-                              (BlocProvider.of<LoginBloc>(context).state
-                                      as LoggedInLoginState)
-                                  .username,
-                              reviewController.text);
+                        var state = (BlocProvider.of<LoginBloc>(context).state
+                            as LoggedInLoginState);
+                        if (state.username.isNotEmpty) {
+                          onReviewed(state.username, reviewController.text);
                           FocusScope.of(context).requestFocus(FocusNode());
                           reviewController.clear();
                         }

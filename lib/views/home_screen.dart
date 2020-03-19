@@ -1,13 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:getflutter/components/loader/gf_loader.dart';
-import 'package:getflutter/types/gf_loader_type.dart';
 import 'package:mygameslist_flutter/blocs/list_bloc.dart';
-import 'package:mygameslist_flutter/colors.dart';
 import 'package:mygameslist_flutter/components/game_widget.dart';
 import 'package:mygameslist_flutter/components/loading_indicator.dart';
-import 'package:mygameslist_flutter/components/perspective_drawer.dart';
 import 'package:mygameslist_flutter/components/side_drawer.dart';
 import 'package:mygameslist_flutter/components/user_avatar.dart';
 import 'package:mygameslist_flutter/models/game_model.dart';
@@ -15,7 +11,6 @@ import 'package:mygameslist_flutter/styles.dart';
 import 'package:mygameslist_flutter/views/details_screen.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:animations/animations.dart';
-import 'dart:math' as math;
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -60,18 +55,16 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                     UserAvatar(),
                   ],
                   pinned: true,
-
                   //----------------------------------------------AppBar Background Image
                   flexibleSpace: FlexibleSpaceBar(
                     background: Image.asset(
                       'images/header.jpg',
                       fit: BoxFit.cover,
                       colorBlendMode: BlendMode.darken,
-                      color: Color(0x66000000),
+                      color: Color(0x55000000),
                     ),
                   ),
                   expandedHeight: 180,
-
                   //----------------------------------------------Tab Buttons
                   bottom: TabBar(
                     indicatorColor: Colors.lightGreenAccent,
@@ -150,7 +143,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                       },
                     ),
                   ),
-
                   //----------------------------------------------Tab 2
                   Container(
                     child: Center(

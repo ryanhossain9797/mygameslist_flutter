@@ -49,10 +49,7 @@ class _LoginScreenState extends State<LoginScreen> {
     return BlocListener<LoginBloc, LoginState>(
       listener: (context, state) {
         if (state is LoggedInLoginState) {
-          Navigator.pushReplacement(
-            context,
-            PageTransition(child: HomeScreen(), type: PageTransitionType.fade),
-          );
+          Navigator.pop(context);
         }
       },
       child: Scaffold(

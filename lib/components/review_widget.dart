@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:mygameslist_flutter/blocs/details_bloc.dart';
 import 'package:mygameslist_flutter/blocs/login_bloc.dart';
 import 'package:mygameslist_flutter/colors.dart';
@@ -244,10 +245,14 @@ class _ReviewWidgetState extends State<ReviewWidget>
                             SizedBox(
                               height: 10,
                             ),
-                            Text(
-                              widget.review.review,
-                              style: darkGreyText.copyWith(
-                                  color: Colors.white, fontSize: 12),
+                            MarkdownBody(
+                              data: widget.review.review,
+                              styleSheet: MarkdownStyleSheet(
+                                code: TextStyle(color: darkGreyColor),
+                              ),
+                            ),
+                            SizedBox(
+                              height: 20,
                             ),
                           ],
                         ),

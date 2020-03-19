@@ -28,6 +28,8 @@ dependencies:
   shared_preferences: ^0.5.6+2
   animations: ^1.0.0+5
   sticky_headers: ^0.1.8+1
+  zefyr: ^0.10.0
+  flutter_markdown: ^0.3.4
 
 dev_dependencies:
   flutter_test:
