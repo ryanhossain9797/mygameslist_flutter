@@ -16,6 +16,7 @@ import 'package:mygameslist_flutter/components/perspective_drawer.dart';
 import 'package:mygameslist_flutter/components/review_widget.dart';
 import 'package:mygameslist_flutter/components/side_drawer.dart';
 import 'package:mygameslist_flutter/components/user_avatar.dart';
+import 'package:mygameslist_flutter/experimental/flutter_sticky_header_widget.dart';
 import 'package:mygameslist_flutter/styles.dart';
 import 'package:mygameslist_flutter/models/review_model.dart';
 import 'package:mygameslist_flutter/models/game_model.dart';
@@ -46,409 +47,261 @@ class _DetailsScreenState extends State<DetailsScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       drawer: SideDrawer(),
-      body: NestedScrollView(
-        headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-          return [
-            //-------------------------APPBAR
-            //---------------Boilerplate for preventing overlap in sliverappbar
-            SliverOverlapAbsorber(
-              handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
-              child: SliverAppBar(
-                pinned: true,
-                expandedHeight: 180,
-                flexibleSpace: FlexibleSpaceBar(
-                  background: Hero(
-                    tag: widget.id,
-                    child: Stack(
-                      fit: StackFit.expand,
-                      children: [
-                        Image(
-                          fit: BoxFit.cover,
-                          image: widget.tempImage,
-                        ),
-                        Container(
-                          //---------------Gradient on appbar
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              begin: FractionalOffset.topCenter,
-                              end: FractionalOffset.bottomCenter,
-                              colors: [
-                                Colors.lightGreenAccent.withAlpha(127),
-                                Colors.transparent
-                              ],
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                ),
-                actions: <Widget>[
-                  UserAvatar(), //---------------Avatar Icon on right of appbar
-                ],
-              ),
-            ),
-          ];
-        },
-        body: BlocBuilder<DetailsBloc, DetailsLoadState>(
-          builder: (context, state) {
-            if (state is DetailsLoadingState) {
-              //-----------------------LOADING
-              return Center(
-                child: LoadingIndicator(),
-              );
-            } else if (state is DetailsFailedState) {
-              //-----------------------ERROR
-              return Center(
-                child: Text("error"),
-              );
-            } else {
-              //-----------------------MAIN BODY
-              GameModel _article = (state as DetailsLoadedState).game;
-              List<ReviewModel> _reviews =
-                  (state as DetailsLoadedState).reviews;
-              // return DetailsBodyWidget(article: article, reviews: reviews);
-              return Builder(
-                builder: (context) {
-                  return CustomScrollView(
-                    key: PageStorageKey("details"),
-                    slivers: <Widget>[
-                      SliverOverlapInjector(
-                        handle: NestedScrollView.sliverOverlapAbsorberHandleFor(
-                            context),
-                      ),
-                      SliverToBoxAdapter(
-                        child: Column(
-                          children: <Widget>[
-                            //-----------------------TITLE
-                            Padding(
-                              child: Text(
-                                _article.title,
-                                textAlign: TextAlign.center,
-                                style: boldGreenText,
-                              ),
-                              padding: EdgeInsets.symmetric(
-                                  vertical: 20, horizontal: 10),
-                            ),
-                            //-----------------------DESCRIPTION
-                            Container(
-                              decoration: BoxDecoration(color: darkGreyColor),
-                              padding: EdgeInsets.all(20),
-                              child: MarkdownBody(
-                                data: _article.content,
-                                styleSheet: MarkdownStyleSheet(
-                                  code: TextStyle(color: darkGreyColor),
-                                ),
-                              ),
-                            ),
-                            //Padding
-                            SizedBox(
-                              height: 20,
-                            ),
-                            //-----------------------REVIEWS HEADER
-                            Text(
-                              "Reviews",
-                              style: boldGreenText,
-                            ),
-                            SizedBox(
-                              height: 15,
-                            ),
-                          ],
-                        ),
-                      ),
-                      SliverList(
-                        delegate: SliverChildBuilderDelegate(
-                          (context, index) {
-                            return ReviewWidget(
-                              review: _reviews[index],
-                            );
-                          },
-                          childCount: _reviews.length,
-                        ),
-                      ),
-                      SliverToBoxAdapter(
-                        child: Column(
-                          children: <Widget>[
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 10),
-                              child: BlocBuilder<LoginBloc, LoginState>(
-                                builder: (context, state) {
-                                  if (state is LoggedInLoginState) {
-                                    String email = state.email;
-                                    bool reviewed = false;
-                                    for (ReviewModel review in _reviews) {
-                                      if (review.email == email) {
-                                        reviewed = true;
-                                        break;
-                                      }
-                                    }
-                                    if (!reviewed) {
-                                      //-----------------------NEW REVIEW BUTTON
-                                      return Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              vertical: 10.0),
-                                          child: LargeButton(
-                                            onPress: () => Navigator.push(
-                                              context,
-                                              PageTransition(
-                                                child: ReviewScreen(),
-                                                type: PageTransitionType.fade,
-                                              ),
-                                            ),
-                                            text: "Review as ${state.username}",
-                                          ));
-                                    } else {
-                                      return Container();
-                                    }
-                                  } else {
-                                    //-----------------------SIGN IN PROMPT IF NOT SIGNED IN
-                                    return Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: 10.0),
-                                      child: LargeButton(
-                                        text: "Sign In to review",
-                                        onPress: () => Navigator.push(
-                                          context,
-                                          PageTransition(
-                                            child: LoginScreen(),
-                                            type: PageTransitionType.fade,
-                                          ),
-                                        ),
-                                      ),
-                                    );
-                                  }
-                                },
-                              ),
-                            ),
-                            //-----------------------FOOTER
-                            Container(
-                              height: 100,
-                              child: Center(
-                                child: Text(
-                                  "Total ${_reviews.length} reviews",
-                                  style: boldGreenText.copyWith(fontSize: 24),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  );
-                },
-              );
-            }
-          },
-        ),
-      ),
+      body: DetailsBody(widget: widget),
     );
   }
 }
 
-class DetailsBodyWidget extends StatelessWidget {
-  const DetailsBodyWidget({
+class DetailsBody extends StatelessWidget {
+  const DetailsBody({
     Key key,
-    @required this.article,
-    @required this.reviews,
+    @required this.widget,
   }) : super(key: key);
 
-  final GameModel article;
-  final List<ReviewModel> reviews;
+  final DetailsScreen widget;
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Column(
-        children: <Widget>[
-          //-----------------------TITLE
-          Padding(
-            child: Text(
-              article.title,
-              textAlign: TextAlign.center,
-              style: boldGreenText,
+    return NestedScrollView(
+      headerSliverBuilder: (
+        BuildContext context,
+        bool innerBoxIsScrolled,
+      ) {
+        return [
+          //-------------------------APPBAR
+          //---------------Boilerplate for preventing overlap in sliverappbar
+          SliverOverlapAbsorber(
+            handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+            sliver: SliverSafeArea(
+              sliver: DetailsAppBar(widget: widget),
+              top: false,
             ),
-            padding: EdgeInsets.symmetric(vertical: 20, horizontal: 10),
           ),
-          //-----------------------DESCRIPTION
-          Container(
-            decoration: BoxDecoration(color: darkGreyColor),
-            padding: EdgeInsets.all(20),
-            child: MarkdownBody(
-              data: article.content,
-              styleSheet: MarkdownStyleSheet(
-                code: TextStyle(color: darkGreyColor),
+        ];
+      },
+      body: BlocBuilder<DetailsBloc, DetailsLoadState>(
+        builder: (context, state) {
+          if (state is DetailsLoadingState) {
+            //-----------------------LOADING
+            return Center(
+              child: LoadingIndicator(),
+            );
+          } else if (state is DetailsFailedState) {
+            //-----------------------ERROR
+            return Center(
+              child: Text("error"),
+            );
+          } else {
+            //-----------------------MAIN BODY
+            GameModel _article = (state as DetailsLoadedState).game;
+            List<ReviewModel> _reviews = (state as DetailsLoadedState).reviews;
+            return Builder(
+              builder: (context) {
+                return CustomScrollView(
+                  key: PageStorageKey("details"),
+                  slivers: <Widget>[
+                    SliverOverlapInjector(
+                      handle: NestedScrollView.sliverOverlapAbsorberHandleFor(
+                          context),
+                    ),
+                    SliverToBoxAdapter(
+                      child: DetailsTopArea(article: _article),
+                    ),
+                    SliverList(
+                      delegate: SliverChildBuilderDelegate(
+                        (context, index) {
+                          return ReviewWidget(
+                            review: _reviews[index],
+                          );
+                        },
+                        childCount: _reviews.length,
+                      ),
+                    ),
+                    //for(int i = 0; i < 100; i++) FLutterStickyHeaderExperimentalWidget(),
+                    SliverToBoxAdapter(
+                      child: DetailsBottomArea(reviews: _reviews),
+                    ),
+                  ],
+                );
+              },
+            );
+          }
+        },
+      ),
+    );
+  }
+}
+
+class DetailsAppBar extends StatelessWidget {
+  const DetailsAppBar({
+    Key key,
+    @required this.widget,
+  }) : super(key: key);
+
+  final DetailsScreen widget;
+
+  @override
+  Widget build(BuildContext context) {
+    return SliverAppBar(
+      pinned: true,
+      expandedHeight: 180,
+      flexibleSpace: FlexibleSpaceBar(
+        background: Hero(
+          tag: widget.id,
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              Image(
+                fit: BoxFit.cover,
+                image: widget.tempImage,
               ),
-            ),
+              Container(
+                //---------------Gradient on appbar
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: FractionalOffset.topCenter,
+                    end: FractionalOffset.bottomCenter,
+                    colors: [
+                      Colors.lightGreenAccent.withAlpha(127),
+                      Colors.transparent
+                    ],
+                  ),
+                ),
+              )
+            ],
           ),
-          //Padding
-          SizedBox(
-            height: 20,
-          ),
-          //-----------------------REVIEWS HEADER
-          Text(
-            "Reviews",
+        ),
+      ),
+      actions: <Widget>[
+        UserAvatar(), //---------------Avatar Icon on right of appbar
+      ],
+    );
+  }
+}
+
+class DetailsTopArea extends StatelessWidget {
+  const DetailsTopArea({
+    Key key,
+    @required GameModel article,
+  })  : _article = article,
+        super(key: key);
+
+  final GameModel _article;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: <Widget>[
+        //-----------------------TITLE
+        Padding(
+          child: Text(
+            _article.title,
+            textAlign: TextAlign.center,
             style: boldGreenText,
           ),
-          SizedBox(
-            height: 15,
+          padding: EdgeInsets.symmetric(vertical: 20, horizontal: 10),
+        ),
+        //-----------------------DESCRIPTION
+        Container(
+          decoration: BoxDecoration(color: darkGreyColor),
+          padding: EdgeInsets.all(20),
+          child: MarkdownBody(
+            data: _article.content,
+            styleSheet: MarkdownStyleSheet(
+              code: TextStyle(color: darkGreyColor),
+            ),
           ),
-          //-----------------------REVIEWS
-          for (var review in reviews)
-            ReviewWidget(
-              review: review,
-            ), //-------------Minimum dart version 2.5
-          //-----------------------BOTTOM AREA
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10),
-            child: BlocBuilder<LoginBloc, LoginState>(
-              builder: (context, state) {
-                if (state is LoggedInLoginState) {
-                  String email = state.email;
-                  bool reviewed = false;
-                  for (ReviewModel review in reviews) {
-                    if (review.email == email) {
-                      reviewed = true;
-                      break;
-                    }
+        ),
+        //Padding
+        SizedBox(
+          height: 20,
+        ),
+        //-----------------------REVIEWS HEADER
+        Text(
+          "Reviews",
+          style: boldGreenText,
+        ),
+        SizedBox(
+          height: 15,
+        ),
+      ],
+    );
+  }
+}
+
+class DetailsBottomArea extends StatelessWidget {
+  const DetailsBottomArea({
+    Key key,
+    @required List<ReviewModel> reviews,
+  })  : _reviews = reviews,
+        super(key: key);
+
+  final List<ReviewModel> _reviews;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: <Widget>[
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          child: BlocBuilder<LoginBloc, LoginState>(
+            builder: (context, state) {
+              if (state is LoggedInLoginState) {
+                String email = state.email;
+                bool reviewed = false;
+                for (ReviewModel review in _reviews) {
+                  if (review.email == email) {
+                    reviewed = true;
+                    break;
                   }
-                  if (!reviewed) {
-                    //-----------------------NEW REVIEW BUTTON
-                    return Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 10.0),
-                        child: LargeButton(
-                          onPress: () => Navigator.push(
-                            context,
-                            PageTransition(
-                              child: ReviewScreen(),
-                              type: PageTransitionType.fade,
-                            ),
-                          ),
-                          text: "Review as ${state.username}",
-                        ));
-                  } else {
-                    return Container();
-                  }
-                } else {
-                  //-----------------------SIGN IN PROMPT IF NOT SIGNED IN
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 10.0),
-                    child: LargeButton(
-                      text: "Sign In to review",
-                      onPress: () => Navigator.push(
-                        context,
-                        PageTransition(
-                          child: LoginScreen(),
-                          type: PageTransitionType.fade,
-                        ),
-                      ),
-                    ),
-                  );
                 }
-              },
-            ),
-          ),
-          //-----------------------FOOTER
-          Container(
-            height: 100,
-            child: Center(
-              child: Text(
-                "Total ${reviews.length} reviews",
-                style: boldGreenText.copyWith(fontSize: 24),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-typedef ReviewCallback(String username, String review);
-
-class ReviewSubmissionWidget extends StatelessWidget {
-  ReviewSubmissionWidget({Key key, @required this.onReviewed})
-      : super(key: key);
-
-  final ReviewCallback onReviewed;
-  final TextEditingController reviewController = TextEditingController();
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.symmetric(vertical: 10),
-      child: Column(
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.symmetric(
-              vertical: 5,
-            ),
-            child: Row(
-              children: <Widget>[
-                Expanded(
-                    child: Center(
-                  child: Text(
-                    (BlocProvider.of<LoginBloc>(context).state
-                            as LoggedInLoginState)
-                        .username,
-                    style: boldGreenText.copyWith(fontSize: 18),
-                  ),
-                )),
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 5,
-                    ),
-                    child: GFButton(
-                      textColor: darkGreyColor,
-                      color: Colors.lightGreenAccent,
-                      borderShape: RoundedRectangleBorder(
-                          borderRadius: primaryCircleBorderRadius),
-                      child: Text(
-                        "submit",
-                        style: darkGreyText.copyWith(fontSize: 18),
+                if (!reviewed) {
+                  //-----------------------NEW REVIEW BUTTON
+                  return Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 10.0),
+                      child: LargeButton(
+                        onPress: () => Navigator.push(
+                          context,
+                          PageTransition(
+                            child: ReviewScreen(),
+                            type: PageTransitionType.fade,
+                          ),
+                        ),
+                        text: "Review as ${state.username}",
+                      ));
+                } else {
+                  return Container();
+                }
+              } else {
+                //-----------------------SIGN IN PROMPT IF NOT SIGNED IN
+                return Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 10.0),
+                  child: LargeButton(
+                    text: "Sign In to review",
+                    onPress: () => Navigator.push(
+                      context,
+                      PageTransition(
+                        child: LoginScreen(),
+                        type: PageTransitionType.fade,
                       ),
-                      onPressed: () {
-                        var state = (BlocProvider.of<LoginBloc>(context).state
-                            as LoggedInLoginState);
-                        if (state.username.isNotEmpty) {
-                          onReviewed(state.username, reviewController.text);
-                          FocusScope.of(context).requestFocus(FocusNode());
-                          reviewController.clear();
-                        }
-                      },
                     ),
                   ),
-                )
-              ],
+                );
+              }
+            },
+          ),
+        ),
+        //-----------------------FOOTER
+        Container(
+          height: 100,
+          child: Center(
+            child: Text(
+              "Total ${_reviews.length} reviews",
+              style: boldGreenText.copyWith(fontSize: 24),
             ),
           ),
-          InputBox(
-            hint: "review",
-            controller: reviewController,
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class InputBox extends StatelessWidget {
-  const InputBox({Key key, this.hint = "hint", this.controller})
-      : super(key: key);
-
-  final String hint;
-  final TextEditingController controller;
-  @override
-  Widget build(BuildContext context) {
-    return Theme(
-      data: Theme.of(context).copyWith(
-        cursorColor: Colors.lightGreenAccent,
-      ),
-      child: InputField(
-        controller: controller != null ? controller : TextEditingController(),
-        hintText: hint,
-      ),
+        ),
+      ],
     );
   }
 }

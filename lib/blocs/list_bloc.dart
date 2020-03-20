@@ -23,14 +23,13 @@ class ListBloc extends Bloc<ListLoadEvent, ListLoadState> {
 
   @override
   Stream<ListLoadState> mapEventToState(ListLoadEvent event) async* {
-    
     yield ListLoadingState();
     try {
       List<GameModel> games = await ApiHelper.getAllGames();
-      print("list load succeeded");
+      print("LISTBLOC: list load succeeded");
       yield ListLoadedState(games);
     } catch (e) {
-      print("list load failed");
+      print("LISTBLOC: list load failed");
       yield ListFailedState();
     }
   }

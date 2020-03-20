@@ -41,7 +41,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               SliverOverlapAbsorber(
                 handle:
                     NestedScrollView.sliverOverlapAbsorberHandleFor(context),
-                child: SliverAppBar(
+                sliver: SliverAppBar(
                   pinned: true,
                   centerTitle: true,
                   title: Text(
@@ -95,8 +95,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                         padding: EdgeInsets.all(10),
                         child: IconButton(
                           icon: Icon(Icons.refresh),
-                          onPressed: () => BlocProvider.of<ListBloc>(context)
-                              .add(ListLoadEvent()),
+                          onPressed: () {
+                            BlocProvider.of<ListBloc>(context).add(
+                              ListLoadEvent(),
+                            );
+                          },
                         ),
                       )
                     ],
