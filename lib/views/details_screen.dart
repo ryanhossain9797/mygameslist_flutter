@@ -72,7 +72,7 @@ class DetailsBody extends StatelessWidget {
           //---------------Boilerplate for preventing overlap in sliverappbar
           SliverOverlapAbsorber(
             handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
-            sliver: SliverSafeArea(
+            child: SliverSafeArea(
               sliver: DetailsAppBar(widget: widget),
               top: false,
             ),

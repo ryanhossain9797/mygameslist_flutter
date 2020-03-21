@@ -29,11 +29,13 @@ class ApiHelper {
   }
 
   static getGameById(String id) async {
+    print("APIGETGAMEBYID: Called");
     try {
       Response response =
           await get(Uri.encodeFull("http://118.179.70.140:3693/articles/$id"));
+      print("APIGETGAMEBYID: Response Received");
       var jsonResponse = (jsonDecode(response.body))["article"];
-
+      print("APIGETGAMEBYID: Response Decoded, Returning Game");
       return GameModel.fromJson(json: jsonResponse);
     } catch (e) {
       print("APIGETGAMEBYID: $e");
