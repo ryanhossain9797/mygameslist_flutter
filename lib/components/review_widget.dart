@@ -248,6 +248,8 @@ class _ReviewWidgetState extends State<ReviewWidget>
                             MarkdownBody(
                               data: widget.review.review,
                               styleSheet: MarkdownStyleSheet(
+                                codeblockDecoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10)),
                                 code: TextStyle(color: darkGreyColor),
                               ),
                             ),

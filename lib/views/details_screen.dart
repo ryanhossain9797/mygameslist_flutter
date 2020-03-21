@@ -146,30 +146,27 @@ class DetailsAppBar extends StatelessWidget {
       pinned: true,
       expandedHeight: 180,
       flexibleSpace: FlexibleSpaceBar(
-        background: Hero(
-          tag: widget.id,
-          child: Stack(
-            fit: StackFit.expand,
-            children: [
-              Image(
-                fit: BoxFit.cover,
-                image: widget.tempImage,
-              ),
-              Container(
-                //---------------Gradient on appbar
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: FractionalOffset.topCenter,
-                    end: FractionalOffset.bottomCenter,
-                    colors: [
-                      Colors.lightGreenAccent.withAlpha(127),
-                      Colors.transparent
-                    ],
-                  ),
+        background: Stack(
+          fit: StackFit.expand,
+          children: [
+            Image(
+              fit: BoxFit.cover,
+              image: widget.tempImage,
+            ),
+            Container(
+              //---------------Gradient on appbar
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: FractionalOffset.topCenter,
+                  end: FractionalOffset.bottomCenter,
+                  colors: [
+                    Colors.lightGreenAccent.withAlpha(127),
+                    Colors.transparent
+                  ],
                 ),
-              )
-            ],
-          ),
+              ),
+            )
+          ],
         ),
       ),
       actions: <Widget>[

@@ -38,17 +38,14 @@ class GameWidget extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            Hero(
-              tag: game.id,
-              child: ClipRRect(
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(kPrimaryRadiusValue),
-                  topRight: Radius.circular(kPrimaryRadiusValue),
-                ),
-                child: Image(
-                  image: image,
-                  fit: BoxFit.cover,
-                ),
+            ClipRRect(
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(kPrimaryRadiusValue),
+                topRight: Radius.circular(kPrimaryRadiusValue),
+              ),
+              child: Image(
+                image: image,
+                fit: BoxFit.cover,
               ),
             ),
             Padding(

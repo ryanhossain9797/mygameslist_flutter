@@ -41,6 +41,8 @@ class DetailsBloc extends Bloc<DetailsEvent, DetailsLoadState> {
   Stream<DetailsLoadState> mapEventToState(DetailsEvent event) async* {
     if (event is LoadDetailsEvent) {
       yield DetailsLoadingState();
+      //-------------------Intentional delay for better smoothness
+      await Future.delayed(Duration(seconds: 1));
       try {
         print("DETAILSBLOC: loading reviews");
         List<ReviewModel> reviews = await ApiHelper.getAllReviews(event.id);

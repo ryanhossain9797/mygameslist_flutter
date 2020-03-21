@@ -123,6 +123,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                 handle: NestedScrollView
                                     .sliverOverlapAbsorberHandleFor(context),
                               ),
+                              SliverPadding(
+                                padding: EdgeInsets.symmetric(vertical: 5),
+                              ),
                               SliverList(
                                 delegate: SliverChildBuilderDelegate(
                                   (context, index) {
@@ -136,21 +139,23 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                         onTap: (image) {
                                           //--------------------TODO {LoadDetailEvent here instead?}
                                           Navigator.push(
-                                            context,
-                                            PageTransition(
-                                              type: PageTransitionType.fade,
-                                              child: DetailsScreen(
-                                                tempImage: image,
-                                                id: _articles[index].id,
-                                              ),
-                                            ),
-                                          );
+                                              context,
+                                              PageTransition(
+                                                  child: DetailsScreen(
+                                                    tempImage: image,
+                                                    id: _articles[index].id,
+                                                  ),
+                                                  type: PageTransitionType
+                                                      .rightToLeftWithFade));
                                         },
                                       ),
                                     );
                                   },
                                   childCount: _articles.length,
                                 ),
+                              ),
+                              SliverPadding(
+                                padding: EdgeInsets.symmetric(vertical: 5),
                               ),
                             ],
                           );
